@@ -1,0 +1,23 @@
+{
+    "name": "voltra/whitebox",
+    "description": "A lightweight PHP micro framework to create dynamic websites easily",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Voltra",
+            "email": "ludwig.guerin.98@gmx.fr"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "WhiteBox\\" : "src"
+        }
+    },
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.4"
+    }
+}
