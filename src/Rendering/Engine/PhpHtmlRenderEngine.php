@@ -6,6 +6,7 @@ use WhiteBox\Http\Session;
 use WhiteBox\Rendering\I_ViewRenderEngine;
 
 $vd = new MagicalArray(); //View's data
+//first initialization on creation
 
 class PhpHtmlRenderEngine implements I_ViewRenderEngine {
     /**
@@ -26,15 +27,22 @@ class PhpHtmlRenderEngine implements I_ViewRenderEngine {
 
     public static function beginViewRendering(){
         global $vd;
-        if(Session::isStarted())
-            $vd = new MagicalArray( (is_null(Session::get("VIEW_DATA")) ? [] : Session::get("VIEW_DATA")) );
+        if(Session::isStarted() && !is_null(Session::get("VIEW_DATA")))
+            $vd = new MagicalArray( Session::get("VIEW_DATA") );
+        else
+            self::resetViewData();
     }
 
     public static function endViewRendering(){
         global $vd;
         if(Session::isStarted()) {
-            $vd = new MagicalArray();
+            self::resetViewData();
             Session::set("VIEW_DATA", []);
         }
+    }
+
+    public static function resetViewData(){
+        global $vd;
+        $vd = new MagicalArray();
     }
 }
