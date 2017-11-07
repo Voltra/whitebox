@@ -8,9 +8,24 @@ use WhiteBox\Http\Session;
 use WhiteBox\Rendering\T_ViewRenderEngine;
 
 class Renderer{
+    /////////////////////////////////////////////////////////////////////////
+    //Class properties
+    /////////////////////////////////////////////////////////////////////////
+    /**The view render engine used by the renderer
+     * @var mixed|T_ViewRenderEngine|I_ViewRenderEngine|null
+     */
     protected static $engine = null;
-    public static $baseLocation = "";
 
+    /**The base location of the view files
+     * @var string
+     */
+    protected static $baseLocation = "";
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Class methods
+    /////////////////////////////////////////////////////////////////////////
     /**Checks whether or not there's a render engine available
      * @return bool
      */
@@ -25,7 +40,7 @@ class Renderer{
         return self::hasRenderEngine()  //Has an engine
             && ( //and
                 self::$engine instanceof I_ViewRenderEngine //is a I_ViewRenderEngine
-                || (new TraitChecker(get_class(self::$engine)))->hasTrait(T_ViewRenderEngine::class) //or uses TViewRenderEngine trait
+                || TraitChecker::classHasTrait(get_class(self::$engine), T_ViewRenderEngine::class) //or uses TViewRenderEngine trait
                 || ( method_exists(self::$engine, "render") && is_callable([self::$engine, "render"]) ) //or has a method render
             );
     }
@@ -84,12 +99,15 @@ class Renderer{
         }
     }
 
-    /**Deletes the render engine in use (and sets it back to null)
+    /**Removes the render engine in use (and sets it back to null)
      */
     public static function removeRenderEngine(){
         self::$engine = null;
     }
 
+    /**Sets the base location of view files
+     * @param string $path being the base path for all view files
+     */
     public static function setBaseLocation(string $path){
         self::$baseLocation = "{$path}";
     }

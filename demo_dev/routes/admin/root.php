@@ -1,7 +1,5 @@
 <?php
 
-use WhiteBox\Rendering\Renderer;
-
 function genFalseGenerator(){
     return function(){
         return false;
@@ -14,8 +12,16 @@ function genTrueGenerator(){
     };
 }
 
-function genFalse(){
-    return false;
+function genRandomBoolGenerator(){
+    return function(){
+        return (bool)rand(0,1);
+    };
+}
+
+use WhiteBox\Rendering\Renderer;
+
+function isAdmin(){
+    return genRandomBoolGenerator();
 }
 
 $app->get("/admin", function(){
@@ -23,4 +29,4 @@ $app->get("/admin", function(){
         "admin" => "OMAGAD YOU AN ADMIN?",
         "phpversion" => phpversion()
     ]);
-}, genTrueGenerator());
+}, isAdmin());

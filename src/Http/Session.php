@@ -8,7 +8,14 @@
 
 namespace WhiteBox\Http;
 
+/**An implementation of I_Session using the native PHP session system
+ * Class Session
+ * @package WhiteBox\Http
+ */
 class Session implements I_Session{
+    /////////////////////////////////////////////////////////////////////////
+    //Class methods
+    /////////////////////////////////////////////////////////////////////////
     /**A static method guaranteeing the fact that sessions are in use once called
      */
     public static function ensureStarted(){

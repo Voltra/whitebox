@@ -1,26 +1,72 @@
 <?php
 namespace WhiteBox\Routing;
 
+use Closure;
 use InvalidArgumentException;
 
+/**The representation of a route in a routing system
+ * Class Route
+ * @package WhiteBox\Routing
+ */
 class Route{
-    public static $METHODS = [
+    /////////////////////////////////////////////////////////////////////////
+    //Class constants
+    /////////////////////////////////////////////////////////////////////////
+    /**A class constant array
+     * @var array
+     */
+    const METHODS = [
         "GET",
         "POST",
         "PUT",
-//        "DELETE",
         "HEAD",
         "error"
     ];
 
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Properties
+    /////////////////////////////////////////////////////////////////////////
+    /**The name given to this Route
+     * @var string|null
+     */
     protected $_name;
+
+    /**The regex used to determine whether a URI matches this Route
+     * @var string
+     */
     protected $_regex;
+
+    /**The method to which this route is applied (GET, POST, etc...)
+     * @var string
+     */
     protected $_method;
+
+    /**The handler attached to this Route (executed when used)
+     * @var callable|Closure
+     */
     protected $_handler;
+
+    /**The middleware function used to determine whether or not the user can access this Route
+     * @var callable|Closure
+     */
     protected $_authorisationMiddleware;
 
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Magics
+    /////////////////////////////////////////////////////////////////////////
+    /**Construct a Route
+     * Route constructor.
+     * @param string $method being the method of this Route (GET, POST, etc...)
+     * @param string $re being the regular expression of this Route
+     * @param callable|null $functor being the handler of this Route
+     * @param callable|null $authMiddleware being the middleware of this Route
+     */
     public function __construct(string $method, string $re, callable $functor = null, callable $authMiddleware = null){
-        if(in_array($method, Route::$METHODS, true))
+        if(in_array($method, Route::METHODS, true))
             $this->_method = $method;
         else
             throw new InvalidArgumentException("The method must be either GET, POST, PUT, HEAD or error.");
@@ -40,21 +86,44 @@ class Route{
         $this->_name = null;
     }
 
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Methods
+    /////////////////////////////////////////////////////////////////////////
+    /**Sets the name of this Route
+     * @param string $name being the new name for this Route
+     * @return $this
+     */
     public function name(string $name){
         $this->_name = "{$name}";
         return $this;
     }
 
+    /**Retrieves the name of this Route
+     * @return string|null
+     */
     public function getName(){ return $this->_name; }
 
+    /**Retrieves the method of this Route
+     * @return string
+     */
     public function method(){
         return $this->_method;
     }
 
+    /**Retrieve the regular expression of this Route
+     * @return string
+     */
     public function regex(){
         return $this->_regex;
     }
 
+    /**Determines whether or not the given Route is equivalent to this Route
+     * @param Route $route being the Route to compare this one to
+     * @param bool $strict determining whether to use strict comparison or not
+     * @return bool
+     */
     public function equals(Route $route, bool $strict = false){
         $truth = $strict ? $this->_name === $route->_name /*&& $this->_handler==$route->getHandler()*/ : true;
 
@@ -63,13 +132,19 @@ class Route{
             && $truth;
     }
 
+    /**Sets the handler for this Routes
+     * @param callable $func being the new handler for this Route
+     * @return $this
+     */
     public function setHandler(callable $func){
-        //if(is_callable($func))
-            $this->_handler = $func;
+        $this->_handler = $func;
 
         return $this;
     }
 
+    /**Retrieves the handler attached to this Route
+     * @return callable|Closure|null
+     */
     public function getHandler(){
         if($this->hasHandler())
             return $this->_handler;
@@ -77,15 +152,25 @@ class Route{
             return null;
     }
 
+    /**Determines whether or not this Route has a handler attached to it
+     * @return bool
+     */
     public function hasHandler(){
         return isset($this->_handler) && !is_null($this->_handler);
     }
 
+    /**Sets the middleware for this Route
+     * @param callable $functor being the new middleware for this route
+     * @return $this
+     */
     public function setAuthMiddleware(callable $functor){
         $this->_authorisationMiddleware = $functor;
         return $this;
     }
 
+    /**Retrieves the middleware of this Route
+     * @return callable|Closure
+     */
     public function getAuthMiddleware(){
         if($this->hasAuthMiddleware())
             return $this->_authorisationMiddleware;
@@ -93,6 +178,9 @@ class Route{
             return function(){ return true; };
     }
 
+    /**Determines whether or not this Route has a middleware attached to it
+     * @return bool
+     */
     public function hasAuthMiddleware(){
         return isset($this->_authorisationMiddleware) && !is_null($this->_authorisationMiddleware);
     }

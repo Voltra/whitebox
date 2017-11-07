@@ -1,5 +1,5 @@
 <?php
-//TODO: DISABLE DEM FUCKING WARNINGS
+//TODO: DISABLE DEM FUCKING WARNINGS FOR PRODUCTION
 
 require_once "../vendor/autoload.php"; //Require Composer's autoloader
 

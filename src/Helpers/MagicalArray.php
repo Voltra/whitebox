@@ -6,20 +6,47 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use JsonSerializable;
 use Serializable;
 use Traversable;
+use WhiteBox\Helpers\I_JsonSerializable;
 
-class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Serializable{
-
+/**A class that aims to be a nice replacement to the native PHP array
+ * Class MagicalArray
+ * @package WhiteBox\Helpers
+ */
+class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Serializable, I_JsonSerializable {
+    /////////////////////////////////////////////////////////////////////////
+    //Properties
+    /////////////////////////////////////////////////////////////////////////
+    /**The wrapped array used for manipulations and storage
+     * @var array
+     */
     protected $array;
+
+    /**The default value to send back if none is available
+     * @var mixed
+     */
     protected $default;
 
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Magics
+    /////////////////////////////////////////////////////////////////////////
+    /**Construct a magical array from a regular array
+     * MagicalArray constructor.
+     * @param array $arr being the array to construct the object from
+     * @param string $default being the default value that would be sent if a required key doesn't exist
+     */
     public function __construct(array $arr=[], $default=""){
         $this->array = $arr;
         $this->default = $default;
     }
 
+    /** A syntactic sugar wrapper that serves as a getter
+     * @param mixed $key being the key in the array
+     * @return mixed|string
+     */
     public function __invoke($key){
         if(isset($this->array[$key]))
             return $this->array[$key];
@@ -27,6 +54,83 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
             return $this->default;
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    //Methods
+    /////////////////////////////////////////////////////////////////////////
+    /**Apply the collection reduction algorithm to this MagicalArray
+     * @param callable $reducer being the reducer function used, must be (acc_type, element_type)->newAcc_type
+     * @param mixed $acc being the default value of the accumulator
+     * @return mixed
+     */
+    public function reduce(callable $reducer, $acc){
+        //return new MagicalArray(array_reduce($this->array, $reducer, $acc));
+
+        foreach ($this as $elem)
+            $acc = $reducer($acc, $elem);
+
+        return $acc;
+    }
+
+    /**Apply the collection mapping algorithm to this MagicalArray
+     * @param callable $mapper being the mapper function, must be (element_type)->newElement_type
+     * @return MagicalArray
+     */
+    public function map(callable $mapper){
+        //return new MagicalArray( array_map($mapper, $this->array) );
+        $arr = [];
+        foreach($this as $elem)
+            $arr[] = $mapper($elem);
+
+        return new MagicalArray($arr, $this->default);
+    }
+
+    /**Apply the collection filtering algorithm to this MagicalArray
+     * @param callable $predicate being the predicate used to keep elements, must be (element_type)->bool
+     * @return MagicalArray
+     */
+    public function filter(callable $predicate){
+        //return new MagicalArray( array_filter($this->array, $predicate) );
+        $arr = [];
+        foreach ($this as $elem) {
+            if ($predicate($elem))
+                $arr[] = $elem;
+        }
+
+        return new MagicalArray($arr, $this->default);
+    }
+
+    /**Call a procedure on each element of this MagicalArray
+     * @param callable $procedure being the procedure to call, must be (element_type)->mixed|void
+     * @return $this
+     */
+    public function forEach(callable $procedure){
+        foreach($this->array as $elem)
+            $procedure($elem);
+
+        return $this;
+    }
+
+
+    /**Gives the size of this MagicalArray
+     * @return int
+     */
+    public function size(){
+        return $this->count();
+    }
+
+
+    /**An alias for size()
+     * @return int
+     */
+    public function length(){
+        return $this->size();
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Overrides
+    /////////////////////////////////////////////////////////////////////////
     /**
      * Retrieve an external iterator
      * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
@@ -99,52 +203,6 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
         unset($this->array[$offset]);
     }
 
-
-    public function reduce(callable $reducer, $acc){
-        //return new MagicalArray(array_reduce($this->array, $reducer, $acc));
-
-        foreach ($this as $elem)
-            $acc = $reducer($acc, $elem);
-
-        return $acc;
-    }
-
-    public function map(callable $mapper){
-        //return new MagicalArray( array_map($mapper, $this->array) );
-        $arr = [];
-        foreach($this as $elem)
-            $arr[] = $mapper($elem);
-
-        return new MagicalArray($arr, $this->default);
-    }
-
-    public function filter(callable $predicate){
-        //return new MagicalArray( array_filter($this->array, $predicate) );
-        $arr = [];
-        foreach ($this as $elem) {
-            if ($predicate($elem))
-                $arr[] = $elem;
-        }
-
-        return new MagicalArray($arr, $this->default);
-    }
-
-    public function forEach(callable $procedure){
-        foreach($this->array as $elem)
-            $procedure($elem);
-
-        return $this;
-    }
-
-
-    public function size(){
-        return $this->count();
-    }
-
-    public function count(){
-        return count($this->array);
-    }
-
     /**
      * String representation of object
      * @link http://php.net/manual/en/serializable.serialize.php
@@ -169,10 +227,24 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
         self::__construct(unserialize($serialized));
     }
 
+    /**Allows to any MagicalArray to be passed to count() as an argument
+     * @return int
+     */
+    public function count(){
+        return count($this->array);
+    }
+
+    /**Creates an instance from a JSON string
+     * @param string $json being the JSON string representing the object to create
+     * @return MagicalArray
+     */
     public static function fromJson(string $json){
         return new MagicalArray(json_decode($json, true));
     }
 
+    /**Converts the instance back to JSON (as a string)
+     * @return string
+     */
     public function toJson(){
         return json_encode($this->array);
     }
