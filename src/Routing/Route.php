@@ -1,7 +1,7 @@
 <?php
 namespace WhiteBox\Routing;
 
-use http\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 
 class Route{
     public static $METHODS = [
@@ -17,8 +17,9 @@ class Route{
     protected $_regex;
     protected $_method;
     protected $_handler;
+    protected $_authorisationMiddleware;
 
-    public function __construct(string $method, string $re, callable $functor = null){
+    public function __construct(string $method, string $re, callable $functor = null, callable $authMiddleware = null){
         if(in_array($method, Route::$METHODS, true))
             $this->_method = $method;
         else
@@ -28,6 +29,15 @@ class Route{
 
         if(!is_null($functor))
             $this->_handler = $functor;
+
+        if(!is_null($functor))
+            $this->_authorisationMiddleware = $authMiddleware;
+        else
+            $this->_authorisationMiddleware = function(){
+                return true;
+            };
+
+        $this->_name = null;
     }
 
     public function name(string $name){
@@ -54,7 +64,7 @@ class Route{
     }
 
     public function setHandler(callable $func){
-        if(is_callable($func))
+        //if(is_callable($func))
             $this->_handler = $func;
 
         return $this;
@@ -68,6 +78,22 @@ class Route{
     }
 
     public function hasHandler(){
-        return isset($this->_handler);
+        return isset($this->_handler) && !is_null($this->_handler);
+    }
+
+    public function setAuthMiddleware(callable $functor){
+        $this->_authorisationMiddleware = $functor;
+        return $this;
+    }
+
+    public function getAuthMiddleware(){
+        if($this->hasAuthMiddleware())
+            return $this->_authorisationMiddleware;
+        else
+            return function(){ return true; };
+    }
+
+    public function hasAuthMiddleware(){
+        return isset($this->_authorisationMiddleware) && !is_null($this->_authorisationMiddleware);
     }
 }

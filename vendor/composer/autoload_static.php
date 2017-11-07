@@ -13,12 +13,17 @@ class ComposerStaticInit6b024b2187000fc3792cb82eb9ea7951
     public static $prefixLengthsPsr4 = array (
         'p' => 
         array (
+            'phpmock\\' => 8,
             'phpDocumentor\\Reflection\\' => 25,
         ),
         'W' => 
         array (
             'WhiteBox\\' => 9,
             'Webmozart\\Assert\\' => 17,
+        ),
+        'P' => 
+        array (
+            'Psr\\Http\\Message\\' => 17,
         ),
         'D' => 
         array (
@@ -28,6 +33,11 @@ class ComposerStaticInit6b024b2187000fc3792cb82eb9ea7951
     );
 
     public static $prefixDirsPsr4 = array (
+        'phpmock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-mock/php-mock/classes',
+            1 => __DIR__ . '/..' . '/php-mock/php-mock/tests',
+        ),
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
@@ -41,6 +51,10 @@ class ComposerStaticInit6b024b2187000fc3792cb82eb9ea7951
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Doctrine\\Instantiator\\' => 
         array (

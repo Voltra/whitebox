@@ -5,14 +5,19 @@
         bootstrap="vendor/autoload.php"
         cacheTokens="false"
         colors="true"
+		verbose="true"
 >
     <testsuites>
         <testsuite name="Helpers">
-            <directory suffix="Test.php">tests/Helpers</directory>
+            <directory>tests/Helpers</directory>
+        </testsuite>
+
+        <testsuite name="Http">
+            <directory>tests/Http</directory>
         </testsuite>
 
         <testsuite name="Routing">
-            <directory suffix="Test.php">tests/Routing</directory>
+            <directory>tests/Routing</directory>
         </testsuite>
     </testsuites>
 </phpunit>

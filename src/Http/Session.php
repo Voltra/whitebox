@@ -8,44 +8,48 @@
 
 namespace WhiteBox\Http;
 
-use WhiteBox\Helpers\MagicalArray;
-
-$vd = new MagicalArray(); //View's data
-
 class Session implements I_Session{
     /**A static method guaranteeing the fact that sessions are in use once called
      */
     public static function ensureStarted(){
         if(!self::isStarted())
-            session_start();
+            return session_start();
+        return true;
     }
 
     /**A static method asserting whether or not a session is started
      * @return bool
      */
     public static function isStarted(){
-        return !(session_status() === PHP_SESSION_NONE);
+        return session_status() !== PHP_SESSION_NONE;
     }
 
     /**Starts a session (or resume one)
      * @param array $options
+     * @return bool
      */
     public static function start(array $options=[]){
-        session_start($options);
+        if(!self::isStarted())
+            return session_start($options);
+        else
+            return false;
     }
 
-    /**Method to only used coupled with the native PHP rendering system, retrieves the view's data and sets it as a global variable
+    /**Aborts a session
+     * @return bool
      */
-    public static function beginViewRendering(){
-        global $vd;
+    public static function stop(){
         if(self::isStarted())
-            $vd = new MagicalArray( (isset($_SESSION["VIEW_DATA"]) ? $_SESSION["VIEW_DATA"] : []) );
+            return session_abort();
+        else
+            return false;
     }
 
-    public static function endViewRendering(){
-        global $vd;
-        if(self::isStarted())
-            $vd = new MagicalArray();
+    /**Retrieves the session's status
+     * @return int
+     */
+    public static function getStatus(){
+        return session_status();
     }
 
     /**Retrieves an information from the session

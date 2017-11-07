@@ -3,13 +3,13 @@ namespace WhiteBox\Rendering;
 
 use Error;
 use WhiteBox\Helpers\TraitChecker;
+use WhiteBox\Rendering\Engine\PhpHtmlRenderEngine;
 use WhiteBox\Http\Session;
-use WhiteBox\Rendering\I_ViewRenderEngine;
 use WhiteBox\Rendering\T_ViewRenderEngine;
 
 class Renderer{
     protected static $engine = null;
-    protected static $baseLocation = "";
+    public static $baseLocation = "";
 
     /**Checks whether or not there's a render engine available
      * @return bool
@@ -33,18 +33,15 @@ class Renderer{
     /**Renders a view file (w/ a render engine if one is registered)
      * @param string $uri - the URI/URL to the view file to render
      * @param array $data - the data to send to the view (if there's a render engine in use)
+     * @return string
      */
     public static function render(string $uri, array $data=[]){
         $URI = self::$baseLocation . $uri;
 
-        if(!self::hasRenderEngine()) {
-            Session::set("VIEW_DATA", $data);
-            Session::beginViewRendering();
-            global $vd; //Use $vd has the View's datasource
-            require "{$URI}";
-            Session::endViewRendering();
-        }else
-            self::renderViaEngine($URI, $data);
+        if(!self::hasRenderEngine())
+            self::registerRenderEngine(new PhpHtmlRenderEngine());
+
+        echo self::renderViaEngine($URI, $data);
     }
 
     /**Clears the output/rendering buffer
@@ -65,10 +62,13 @@ class Renderer{
     /**Renders a view via the registered render engine (only if the render engine is valid)
      * @param string $uri - the URI/URL to the view file to render
      * @param array $data - the data passed to the view
+     * @return string
      */
     protected static function renderViaEngine(string $uri, array $data=[]){
         if(self::hasValidRenderEngine())
-            self::$engine->render($uri, $data);
+            return self::$engine->render($uri, $data);
+        else
+            return "";
     }
 
     /**Defines/replaces the view render engine

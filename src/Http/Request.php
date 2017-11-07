@@ -10,8 +10,14 @@ class Request{
 
     protected $dataSource;
 
+    public static function fromGlobals(){
+        $rq = new Request();
+        $rq->dataSource = array_merge($_SERVER);
+        return $rq;
+    }
+
     public function __construct(){
-        $this->dataSource = array_merge($_SERVER);
+       $this->dataSource = array_merge($_SERVER);
     }
 
     public function queryString(){ return $this->dataSource["QUERY_STRING"]; }

@@ -52,7 +52,7 @@ class Router{
 
     public function __construct(){
         $this->routes = [
-            new Route("error", "404", function(){ echo "Error 404"; })
+            new Route("error", "404", function(){ echo "<b>Error 404</b>"; })
         ];
     }
 
@@ -109,22 +109,28 @@ class Router{
             return [];
     }
 
-    protected function setupRoute(string $method, string $re, callable $functor){
+    protected function setupRoute(string $method, string $re, callable $functor, callable $authMiddleware = null){
         if($this->hasRoute($method, $re)){
             $route =  $this->getRoute($method, $re);
-            if($route!=null && $route->hasHandler()){
+            if(!is_null($route)) {
                 $route->setHandler($functor);
+
+                if(!is_null($authMiddleware))
+                    $route->setAuthMiddleware($authMiddleware);
             }
 
             return $route;
-        }else{
-            //push it to the arrays
-            $this->routes[] = new Route($method, $re);
-            $route = $this->getRoute($method, $re);
-            $route->setHandler($functor);
-
-            return $route;
         }
+        //otherwise
+        //push it to the arrays
+        $this->routes[] = new Route($method, $re);
+        $route = $this->getRoute($method, $re);
+        $route->setHandler($functor);
+
+        if(!is_null($authMiddleware))
+            $route->setAuthMiddleware($authMiddleware);
+
+        return $route;
     }
 
     /** Replaces the handler for the error 404 page
@@ -137,64 +143,58 @@ class Router{
     }
 
     /** Replaces the handler for the given route when accessed via the GET method
-     * @param $route - a string designating the complete route (including the website root)
-     * @param $functor - a callable object/function to be called when the route is requested
+     * @param string $route - a string designating the complete route (including the website root)
+     * @param callable $functor - a callable object/function to be called when the route is requested
      *
-     * @return Route
+     * @param callable|null $authMiddleware
+     * @return \WhiteBox\Routing\Route
      */
-    public function get(string $route, callable $functor){
-        return $this->setupRoute("GET", $route, $functor);
+    public function get(string $route, callable $functor, callable $authMiddleware = null){
+        return $this->setupRoute("GET", $route, $functor, $authMiddleware);
     }
 
     /** Replaces the handler for the given route when accessed via the POST method
-     * @param $route - a string designating the complete route (including the website root)
-     * @param $functor - a callable object/function to be called when the route is requested
+     * @param string $route - a string designating the complete route (including the website root)
+     * @param callable $functor - a callable object/function to be called when the route is requested
      *
-     * @return Route
+     * @param callable|null $authMiddleware
+     * @return \WhiteBox\Routing\Route
      */
-    public function post(string $route, callable $functor){
-        return $this->setupRoute("POST", $route, $functor);
+    public function post(string $route, callable $functor, callable $authMiddleware = null){
+        return $this->setupRoute("POST", $route, $functor, $authMiddleware);
     }
 
     /** Replaces the handler for the given route when accessed via the PUT method
-     * @param $route - a string designating the complete route (including the website root)
-     * @param $functor - a callable object/function to be called when the route is requested
+     * @param string $route - a string designating the complete route (including the website root)
+     * @param callable $functor - a callable object/function to be called when the route is requested
      *
-     * @return Route
+     * @param callable|null $authMiddleware
+     * @return \WhiteBox\Routing\Route
      */
-    public function put(string $route, callable $functor){
-        return $this->setupRoute("PUT", $route, $functor);
+    public function put(string $route, callable $functor, callable $authMiddleware = null){
+        return $this->setupRoute("PUT", $route, $functor, $authMiddleware);
     }
 
-//    /** Replaces the handler for the given route when accessed via the DELETE method
-//     * @param $route - a string designating the complete route (including the website root)
-//     * @param $functor - a callable object/function to be called when the route is requested
-//     *
-//     * @return Route
-//     */
-//    public function delete($route, $functor){
-//            return $this->setupRoute("DELETE", $route, $functor);
-//    }
-
     /** Replaces the handler for the given route when accessed via the HEAD method
-     * @param $route - a string designating the complete route (including the website root)
-     * @param $functor - a callable object/function to be called when the route is requested
+     * @param string $route - a string designating the complete route (including the website root)
+     * @param callable $functor - a callable object/function to be called when the route is requested
      *
-     * @return Route
+     * @param callable|null $authMiddleware
+     * @return \WhiteBox\Routing\Route
      */
-    public function head(string $route, callable $functor){
-        return $this->setupRoute("HEAD", $route, $functor);
+    public function head(string $route, callable $functor, callable $authMiddleware = null){
+        return $this->setupRoute("HEAD", $route, $functor, $authMiddleware);
     }
 
 
     protected function handleRequests(){
-        $request = new Request();
+        $request = Request::fromGlobals();
         $method = $request->getMethod();
         $routes = $this->getRoutesForMethod($method);
         $uri = $request->requestURI();
 
         $route = array_reduce($routes, function($acc, Route $route) use($uri){
-            $regex = new RegexHandler(self::makeRegex($route->regex()));
+            $regex = new RegexHandler( self::makeRegex($route->regex()) );
             if($regex->appliesTo($uri))
                 $acc = $route;
 
@@ -203,6 +203,8 @@ class Router{
 
         if(is_null($route))
             $route = $this->getRoute("error", "404"); //One must always be defined
+        else if(!call_user_func($route->getAuthMiddleware(), $request))
+            $route = $this->getRoute("error", "404");
 
 
         $arguments = self::uriParams($uri, $route->regex());
@@ -223,17 +225,17 @@ class Router{
 
         foreach($this->routes as $route){
             if($route->getName() === $name)
-                return $route->uri();
+                return $route->regex();
         }
 
         return "";
     }
 
     public function redirect(string $url){
-        header("Location: {$url}");
+        return header("Location: {$url}");
     }
 
     public function redirectTo(string $routeName){
-        $this->redirect( $this->urlFor($routeName) );
+        return $this->redirect( $this->urlFor($routeName) );
     }
 }
