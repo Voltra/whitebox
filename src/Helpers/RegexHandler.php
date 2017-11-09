@@ -36,7 +36,7 @@ class RegexHandler{
      * @param string $str being the string to apply the regular expression on
      * @return bool
      */
-    public function appliesTo(string $str){
+    public function appliesTo(string $str): bool{
         return (bool)preg_match($this->re_str, $str);
     }
 
@@ -44,7 +44,7 @@ class RegexHandler{
      * @param string $str being the string to apply the regular expression on
      * @return array
      */
-    public function getGroups(string $str){
+    public function getGroups(string $str): array{
         $groups = [null];
         preg_match($this->re_str, $str, $groups);
         array_shift($groups);

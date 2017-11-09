@@ -37,7 +37,7 @@ class TraitChecker{
     /**Retrieves an array constituted of the traits that this class uses
      * @return array
      */
-    public function getTraits(){
+    public function getTraits(): array{
         return self::getTraitsFrom($this->classID);
     }
 
@@ -45,7 +45,7 @@ class TraitChecker{
      * @param string $trait being the trait id to lookup for (use Trait::class)
      * @return bool
      */
-    public function hasTrait(string $trait){
+    public function hasTrait(string $trait): bool{
         return self::classHasTrait($this->classID, $trait);
     }
 
@@ -59,7 +59,7 @@ class TraitChecker{
      * @param bool $autoload being a flag used to use the autoload or not (if not loaded)
      * @return array
      */
-    public static function getTraitsFrom(string $class, bool $autoload=true){
+    public static function getTraitsFrom(string $class, bool $autoload=true): array{
         $traits = [];
 
         // Get traits of all parent classes
@@ -87,7 +87,7 @@ class TraitChecker{
      * @param string $trait being the trait id of the desired trait (use Trait::class)
      * @return bool
      */
-    public static function classHasTrait(string $class, string $trait){
+    public static function classHasTrait(string $class, string $trait): bool{
         $traits = self::getTraitsFrom($class);
         return in_array($trait, $traits, true);
     }

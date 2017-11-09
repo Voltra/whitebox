@@ -14,5 +14,5 @@ trait T_ViewRenderEngine{
      * @param array $data being the data to pass to the view (associative array)
      * @return string
      */
-    public abstract function render(string $uri, array $data=[]);
+    public abstract function render(string $uri, array $data=[]): string;
 }

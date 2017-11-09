@@ -18,16 +18,16 @@ class Session implements I_Session{
     /////////////////////////////////////////////////////////////////////////
     /**A static method guaranteeing the fact that sessions are in use once called
      */
-    public static function ensureStarted(){
+    public static function ensureStarted(): bool{
         if(!self::isStarted())
-            return session_start();
+            return (bool)session_start();
         return true;
     }
 
     /**A static method asserting whether or not a session is started
      * @return bool
      */
-    public static function isStarted(){
+    public static function isStarted(): bool{
         return session_status() !== PHP_SESSION_NONE;
     }
 
@@ -35,7 +35,7 @@ class Session implements I_Session{
      * @param array $options
      * @return bool
      */
-    public static function start(array $options=[]){
+    public static function start(array $options=[]): bool{
         if(!self::isStarted())
             return session_start($options);
         else
@@ -45,7 +45,7 @@ class Session implements I_Session{
     /**Aborts a session
      * @return bool
      */
-    public static function stop(){
+    public static function stop(): bool{
         if(self::isStarted())
             return session_abort();
         else
@@ -55,7 +55,7 @@ class Session implements I_Session{
     /**Retrieves the session's status
      * @return int
      */
-    public static function getStatus(){
+    public static function getStatus(): int{
         return session_status();
     }
 
@@ -76,7 +76,7 @@ class Session implements I_Session{
      * @param string $key
      * @param mixed $value
      */
-    public static function set(string $key, $value){
+    public static function set(string $key, $value): void{
         self::ensureStarted();
         $_SESSION[$key] = $value;
     }
@@ -84,7 +84,7 @@ class Session implements I_Session{
     /**Removes an information from the session
      * @param string $key
      */
-    public static function delete(string $key){
+    public static function delete(string $key): void{
         self::ensureStarted();
         unset($_SESSION[$key]);
     }

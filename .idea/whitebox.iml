@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="WhiteBox\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/psr7" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/myclabs/deep-copy" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phar-io/manifest" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phar-io/version" />
@@ -42,6 +43,7 @@
         <CLASSES>
           <root url="file://$MODULE_DIR$/vendor/composer" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
+          <root url="file://$MODULE_DIR$/vendor/guzzlehttp/psr7" />
           <root url="file://$MODULE_DIR$/vendor/myclabs/deep-copy" />
           <root url="file://$MODULE_DIR$/vendor/phar-io/manifest" />
           <root url="file://$MODULE_DIR$/vendor/phar-io/version" />
@@ -75,6 +77,7 @@
         <SOURCES>
           <root url="file://$MODULE_DIR$/vendor/composer" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
+          <root url="file://$MODULE_DIR$/vendor/guzzlehttp/psr7" />
           <root url="file://$MODULE_DIR$/vendor/myclabs/deep-copy" />
           <root url="file://$MODULE_DIR$/vendor/phar-io/manifest" />
           <root url="file://$MODULE_DIR$/vendor/phar-io/version" />

@@ -14,5 +14,5 @@ interface I_ViewRenderEngine{
      * @param array $data being the data to pass to the view (associative array)
      * @return string
      */
-    public function render(string $uri, array $data=[]);
+    public function render(string $uri, array $data=[]): string;
 }

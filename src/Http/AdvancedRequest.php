@@ -5,10 +5,10 @@ use HttpRequestMethodException;
 use WhiteBox\Helpers\MagicalArray;
 
 /**A class used to wrap the native PHP HTTP request objects
- * Class Request
+ * Class AdvancedRequest
  * @package WhiteBox\Http
  */
-class Request{
+class AdvancedRequest{
     /////////////////////////////////////////////////////////////////////////
     //Class constants
     /////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ class Request{
     /////////////////////////////////////////////////////////////////////////
     //Properties
     /////////////////////////////////////////////////////////////////////////
-    /**The data source of this Request (associative array)
+    /**The data source of this AdvancedRequest (associative array)
      * @var array
      */
     protected $dataSource;
@@ -37,8 +37,8 @@ class Request{
     /////////////////////////////////////////////////////////////////////////
     //Magics
     /////////////////////////////////////////////////////////////////////////
-    /**Constructs a Request from the $_SERVER variable
-     * Request constructor.
+    /**Constructs a AdvancedRequest from the $_SERVER variable
+     * AdvancedRequest constructor.
      */
     public function __construct(){
        $this->dataSource = array_merge($_SERVER);
@@ -52,39 +52,39 @@ class Request{
     /**Retrieves the query string for the request
      * @return string
      */
-    public function queryString(){ return $this->dataSource["QUERY_STRING"]; }
+    public function queryString(): string{ return $this->dataSource["QUERY_STRING"]; }
 
     /**Retrieves the request's URI
      * @return string
      */
-    public function requestURI(){ return $this->dataSource["REQUEST_URI"]; }
+    public function requestURI(): string{ return $this->dataSource["REQUEST_URI"]; }
 
 
 
     /**Retrieves the request's method
      * @return string
      */
-    public function getMethod(){ return $this->dataSource["REQUEST_METHOD"]; }
+    public function getMethod(): string{ return $this->dataSource["REQUEST_METHOD"]; }
 
     /**Determines whether or not this is a POST request
      * @return bool
      */
-    public function isPost(){ return $this->getMethod()==="POST"; }
+    public function isPost(): bool{ return $this->getMethod()==="POST"; }
 
     /**Determines whether or not this a GET request
      * @return bool
      */
-    public function isGet(){ return $this->getMethod()==="GET"; }
+    public function isGet(): bool{ return $this->getMethod()==="GET"; }
 
     /**Determines whether or not this is a HEAD request
      * @return bool
      */
-    public function isHead(){ return $this->getMethod()==="HEAD"; }
+    public function isHead(): bool{ return $this->getMethod()==="HEAD"; }
 
     /**Determines whether or not this is a DELETE request
      * @return bool
      */
-    public function isPut(){ return $this->getMethod()==="PUT"; }
+    public function isPut(): bool{ return $this->getMethod()==="PUT"; }
 
 
     /**Retrieves a value from the POST request from its key
@@ -93,7 +93,7 @@ class Request{
      * @return string
      * @throws HttpRequestMethodException
      */
-    public function post(string $key){
+    public function post(string $key): string{
         if($this->isPost())
             return (isset($_POST[$key]) ? $_POST[$key] : ""); //"" or null
         else
@@ -106,7 +106,7 @@ class Request{
      * @return string
      * @throws HttpRequestMethodException
      */
-    public function get(string $key){
+    public function get(string $key): string{
         if($this->isGet())
             return (isset($_GET[$key]) ? $_GET[$key] : ""); //"" or null
         else
@@ -117,7 +117,7 @@ class Request{
      * @param string $key being the identifier of the desired cookie
      * @return string|null
      */
-    public function cookie(string $key){
+    public function cookie(string $key): ?string{
         return (isset($_COOKIE[$key]) ? $_COOKIE[$key] : null);
     }
 
@@ -131,7 +131,7 @@ class Request{
      * @param bool $httpOnly (optional) determining whether or not to use HTTP only
      * @return $this
      */
-    public function setCookie(string $key, string $value="", $exp=0, string $path="", string $domain="", bool $secure=false, bool $httpOnly=false){
+    public function setCookie(string $key, string $value="", $exp=0, string $path="", string $domain="", bool $secure=false, bool $httpOnly=false): self{
         setcookie($key, $value, $exp, $path, $domain, $secure, $httpOnly);
         return $this;
     }
@@ -140,7 +140,7 @@ class Request{
      * @return MagicalArray
      * @throws HttpRequestMethodException
      */
-    public function getParams(){
+    public function getParams(): MagicalArray{
         if($this->isGet())
             return new MagicalArray( array_merge($_GET, []) );
         else
@@ -151,7 +151,7 @@ class Request{
      * @return MagicalArray
      * @throws HttpRequestMethodException
      */
-    public function postParams(){
+    public function postParams(): MagicalArray{
         if($this->isPost())
             return new MagicalArray( array_merge($_POST, []) );
         else
@@ -161,11 +161,11 @@ class Request{
     /////////////////////////////////////////////////////////////////////////
     //Class methods
     /////////////////////////////////////////////////////////////////////////
-    /**Construct a Request from the global $_SERVER variable
-     * @return Request
+    /**Construct a AdvancedRequest from the global $_SERVER variable
+     * @return AdvancedRequest
      */
-    public static function fromGlobals(){
-        $rq = new Request();
+    public static function fromGlobals(): self{
+        $rq = new AdvancedRequest();
         $rq->dataSource = array_merge($_SERVER);
         return $rq;
     }

@@ -22,7 +22,7 @@ class PhpHtmlRenderEngine implements I_ViewRenderEngine {
      * @param array $data being the data that will be passed to the view
      * @return string
      */
-    public function render(string $uri, array $data = []){
+    public function render(string $uri, array $data = []): string{
         Session::set("VIEW_DATA", $data);
         self::beginViewRendering();
         ob_start();
@@ -39,7 +39,7 @@ class PhpHtmlRenderEngine implements I_ViewRenderEngine {
     /////////////////////////////////////////////////////////////////////////
     /**A static method that setup the view rendering
      */
-    public static function beginViewRendering(){
+    public static function beginViewRendering(): void{
         if(Session::isStarted() && !is_null(Session::get("VIEW_DATA")))
             self::setViewData( Session::get("VIEW_DATA") );
         else
@@ -48,7 +48,7 @@ class PhpHtmlRenderEngine implements I_ViewRenderEngine {
 
     /**A static method that resets the engine after rendering
      */
-    public static function endViewRendering(){
+    public static function endViewRendering(): void{
         if(Session::isStarted()) {
             self::resetViewData();
             Session::set("VIEW_DATA", []);
@@ -57,14 +57,14 @@ class PhpHtmlRenderEngine implements I_ViewRenderEngine {
 
     /**A helper method to reset the view's data global variable
      */
-    public static function resetViewData(){
+    public static function resetViewData(): void{
         self::setViewData([]);
     }
 
     /**A helper method to set the view's data global variable
      * @param array $data being an associative array containing all of the view's new data
      */
-    public static function setViewData(array $data){
+    public static function setViewData(array $data): void{
         global $vd;
         $vd = new MagicalArray($data);
     }

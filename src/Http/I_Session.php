@@ -23,10 +23,10 @@ interface I_Session{
      * @param string $key
      * @param mixed $value
      */
-    public static function set(string $key, $value);
+    public static function set(string $key, $value): void;
 
     /**Removes an information from the session
      * @param string $key
      */
-    public static function delete(string $key);
+    public static function delete(string $key): void;
 }

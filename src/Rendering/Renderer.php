@@ -2,6 +2,7 @@
 namespace WhiteBox\Rendering;
 
 use Error;
+use PHPUnit\Runner\Exception;
 use WhiteBox\Helpers\TraitChecker;
 use WhiteBox\Rendering\Engine\PhpHtmlRenderEngine;
 use WhiteBox\Http\Session;
@@ -29,14 +30,14 @@ class Renderer{
     /**Checks whether or not there's a render engine available
      * @return bool
      */
-    public static function hasRenderEngine(){
+    public static function hasRenderEngine(): bool{
         return !is_null(self::$engine);
     }
 
     /**Checks whether or not there's a render engine available, if there's one it also checks if it is valid (has a "render" method)
      * @return bool
      */
-    public static function hasValidRenderEngine(){
+    public static function hasValidRenderEngine(): bool{
         return self::hasRenderEngine()  //Has an engine
             && ( //and
                 self::$engine instanceof I_ViewRenderEngine //is a I_ViewRenderEngine
@@ -48,7 +49,6 @@ class Renderer{
     /**Renders a view file (w/ a render engine if one is registered)
      * @param string $uri - the URI/URL to the view file to render
      * @param array $data - the data to send to the view (if there's a render engine in use)
-     * @return string
      */
     public static function render(string $uri, array $data=[]){
         $URI = self::$baseLocation . $uri;
@@ -61,7 +61,7 @@ class Renderer{
 
     /**Clears the output/rendering buffer
      */
-    public static function clear(){
+    protected static function clear(): void{
         ob_end_clean();
     }
 
@@ -69,7 +69,7 @@ class Renderer{
      * @param string $uri - the URI/URl to the view file to render
      * @param array $data - the data passed to the vie
      */
-    public static function renderView(string $uri, array $data=[]){
+    public static function renderView(string $uri, array $data=[]): void{
         self::clear();
         self::render($uri, $data);
     }
@@ -79,18 +79,18 @@ class Renderer{
      * @param array $data - the data passed to the view
      * @return string
      */
-    protected static function renderViaEngine(string $uri, array $data=[]){
+    protected static function renderViaEngine(string $uri, array $data=[]): string{
         if(self::hasValidRenderEngine())
             return self::$engine->render($uri, $data);
         else
-            return "";
+            throw new Exception("The registered view render engine is invalid.");
     }
 
     /**Defines/replaces the view render engine
      * @param $renderer - the new render engine
      * @throws Error
      */
-    public static function registerRenderEngine($renderer){
+    public static function registerRenderEngine($renderer): void{
         self::$engine = $renderer;
 
         if(!self::hasValidRenderEngine()) {
@@ -101,14 +101,14 @@ class Renderer{
 
     /**Removes the render engine in use (and sets it back to null)
      */
-    public static function removeRenderEngine(){
+    public static function removeRenderEngine(): void{
         self::$engine = null;
     }
 
     /**Sets the base location of view files
      * @param string $path being the base path for all view files
      */
-    public static function setBaseLocation(string $path){
+    public static function setBaseLocation(string $path): void{
         self::$baseLocation = "{$path}";
     }
 }

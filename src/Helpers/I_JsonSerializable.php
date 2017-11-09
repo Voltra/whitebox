@@ -24,5 +24,5 @@ interface I_JsonSerializable{
     /**Converts the instance back to JSON (as a string)
      * @return string
      */
-    public function toJson();
+    public function toJson(): string;
 }

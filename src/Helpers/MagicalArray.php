@@ -45,7 +45,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
 
     /** A syntactic sugar wrapper that serves as a getter
      * @param mixed $key being the key in the array
-     * @return mixed|string
+     * @return mixed
      */
     public function __invoke($key){
         if(isset($this->array[$key]))
@@ -75,7 +75,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @param callable $mapper being the mapper function, must be (element_type)->newElement_type
      * @return MagicalArray
      */
-    public function map(callable $mapper){
+    public function map(callable $mapper): self{
         //return new MagicalArray( array_map($mapper, $this->array) );
         $arr = [];
         foreach($this as $elem)
@@ -88,7 +88,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @param callable $predicate being the predicate used to keep elements, must be (element_type)->bool
      * @return MagicalArray
      */
-    public function filter(callable $predicate){
+    public function filter(callable $predicate): self{
         //return new MagicalArray( array_filter($this->array, $predicate) );
         $arr = [];
         foreach ($this as $elem) {
@@ -103,10 +103,42 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @param callable $procedure being the procedure to call, must be (element_type)->mixed|void
      * @return $this
      */
-    public function forEach(callable $procedure){
+    public function forEach(callable $procedure): self{
         foreach($this->array as $elem)
             $procedure($elem);
 
+        return $this;
+    }
+
+    /**Returns a sorted copy of this MagicalArray
+     * @return MagicalArray
+     */
+    public function sort(): MagicalArray{
+        $arr = array_merge($this->array, []);
+        sort($arr);
+        return new MagicalArray($arr);
+    }
+
+    /**Sorts this MagicalArray
+     * @return $this
+     */
+    public function sortInPlace(): self{
+        sort($this->array);
+        return $this;
+    }
+
+    /**
+     * @param callable $sortComparator
+     * @return MagicalArray
+     */
+    public function sortBy(callable $sortComparator): self{
+        $arr = array_merge($this->array, []);
+        usort($arr, $sortComparator);
+        return new MagicalArray($arr);
+    }
+
+    public function sortInPlaceBy(callable $sortComparator): self{
+        usort($this->array, $sortComparator);
         return $this;
     }
 
@@ -114,7 +146,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
     /**Gives the size of this MagicalArray
      * @return int
      */
-    public function size(){
+    public function size(): int{
         return $this->count();
     }
 
@@ -122,7 +154,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
     /**An alias for size()
      * @return int
      */
-    public function length(){
+    public function length(): int{
         return $this->size();
     }
 
@@ -138,7 +170,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * <b>Traversable</b>
      * @since 5.0.0
      */
-    public function getIterator(){
+    public function getIterator(): Traversable{
         return new ArrayIterator($this->array);
     }
 
@@ -154,7 +186,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
      */
-    public function offsetExists($offset){
+    public function offsetExists($offset): bool{
         return isset($this->array[$offset]);
     }
 
@@ -183,7 +215,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @return void
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value){
+    public function offsetSet($offset, $value): void{
         if(is_null($offset))
             $this->array[] = $value;
         else
@@ -199,7 +231,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @return void
      * @since 5.0.0
      */
-    public function offsetUnset($offset){
+    public function offsetUnset($offset): void{
         unset($this->array[$offset]);
     }
 
@@ -209,8 +241,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @return string the string representation of the object or null
      * @since 5.1.0
      */
-    public function serialize()
-    {
+    public function serialize(): string{
         return serialize($this->array);
     }
 
@@ -223,14 +254,14 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @return void
      * @since 5.1.0
      */
-    public function unserialize($serialized){
+    public function unserialize($serialized): void{
         self::__construct(unserialize($serialized));
     }
 
     /**Allows to any MagicalArray to be passed to count() as an argument
      * @return int
      */
-    public function count(){
+    public function count(): int{
         return count($this->array);
     }
 
@@ -238,14 +269,14 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @param string $json being the JSON string representing the object to create
      * @return MagicalArray
      */
-    public static function fromJson(string $json){
+    public static function fromJson(string $json): self{
         return new MagicalArray(json_decode($json, true));
     }
 
     /**Converts the instance back to JSON (as a string)
      * @return string
      */
-    public function toJson(){
+    public function toJson(): string{
         return json_encode($this->array);
     }
 }
