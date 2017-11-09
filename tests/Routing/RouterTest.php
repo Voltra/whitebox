@@ -5,11 +5,9 @@ use phpmock\MockBuilder;
 use PHPUnit\Framework\TestCase as PHPUnit;
 use WhiteBox\Routing\Router;
 
-$GLOBALS["header"] = function(string $str){
-  return "Location: {$str}";
-};
-
 class RouterTest extends PHPUnit{
+    public static $location;
+
     public static function mock(string $name, callable $functor, string $namespace = ""){
         return (new MockBuilder())
             ->setNamespace($namespace)
@@ -54,16 +52,18 @@ class RouterTest extends PHPUnit{
         $mock = self::mock(
             "header",
             function(string $str){
-                return "{$str}";
+                //return "{$str}";
+                self::$location = $str;
             },
             "WhiteBox\\Routing\\"
         );
 
         $mock->enable();
         $app = new Router();
+        $app->redirect("/");
         self::assertEquals(
             "Location: /",
-            $app->redirect("/"),
+            self::$location,
             "The redirection fails : wrong url assigned"
         );
         $mock->disable();
@@ -79,7 +79,8 @@ class RouterTest extends PHPUnit{
         $mock = self::mock(
             "header",
             function(string $str){
-                return "{$str}";
+                //return "{$str}";
+                self::$location = $str;
             },
             "WhiteBox\\Routing\\"
         );
@@ -88,9 +89,10 @@ class RouterTest extends PHPUnit{
         $app = new Router();
         $app->get("/", function(){})->name("unit.test");
 
+        $app->redirectTo("unit.test");
         self::assertEquals(
             "Location: /",
-            $app->redirectTo("unit.test"),
+            self::$location,
             "Something wrong happens while redirecting from a route's name"
         );
 

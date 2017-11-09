@@ -37,7 +37,7 @@ class Session implements I_Session{
      */
     public static function start(array $options=[]): bool{
         if(!self::isStarted())
-            return session_start($options);
+            return (bool)session_start($options);
         else
             return false;
     }
@@ -47,7 +47,7 @@ class Session implements I_Session{
      */
     public static function stop(): bool{
         if(self::isStarted())
-            return session_abort();
+            return (bool)session_abort();
         else
             return false;
     }

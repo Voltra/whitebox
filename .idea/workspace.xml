@@ -1,98 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="237328b9-613a-4213-88aa-825b89b0b4f0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/demo_dev/bootstrap.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/demo_dev/dumpRouteLoader.sh" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/demo_dev/routeLoaderGenerator.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Filesystem/AbstractDirectoryBrowser.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Filesystem/DirectoryBrowser.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Filesystem/I_FSBrowser.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Filesystem/RecursiveDirectoryBrowser.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Helpers/I_MagicalArrayable.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Http/HttpRedirectStatus.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Routing/RouteLoader.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Routing/T_RouteLoader.php" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/.gitignore" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/.scrutinizer.yml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/.travis.install.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/.travis.yml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/phpmd.xml.dist" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/phpunit.xml.dist" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorPerformance/InstantiatorPerformanceEvent.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTest/Exception/InvalidArgumentExceptionTest.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTest/Exception/UnexpectedValueExceptionTest.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTest/InstantiatorTest.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/AbstractClassAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/ArrayObjectAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/ExceptionAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/FinalExceptionAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/PharAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/PharExceptionAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/SerializableArrayObjectAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/SimpleSerializableAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/SimpleTraitAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/UnCloneableAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/UnserializeExceptionArrayObjectAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/WakeUpNoticesAsset.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/tests/DoctrineTest/InstantiatorTestAsset/XMLReaderAsset.php" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/Http/Request.php" afterPath="$PROJECT_DIR$/src/Http/AdvancedRequest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/php.xml" afterPath="$PROJECT_DIR$/.idea/php.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/whitebox.iml" afterPath="$PROJECT_DIR$/.idea/whitebox.iml" />
+    <list default="true" id="237328b9-613a-4213-88aa-825b89b0b4f0" name="Default" comment="Refactored several parts, cleaned up code, updated from PHP7.0.1 to PHP7.1.11">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/aliases.sh" afterPath="$PROJECT_DIR$/aliases.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/codeWritingHelpers.txt" afterPath="$PROJECT_DIR$/codeWritingHelpers.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/composer.json" afterPath="$PROJECT_DIR$/composer.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/composer.lock" afterPath="$PROJECT_DIR$/composer.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/demo_public/index.php" afterPath="$PROJECT_DIR$/demo_public/index.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Helpers/I_JsonSerializable.php" afterPath="$PROJECT_DIR$/src/Helpers/I_JsonSerializable.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Helpers/MagicalArray.php" afterPath="$PROJECT_DIR$/src/Helpers/MagicalArray.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Helpers/RegexHandler.php" afterPath="$PROJECT_DIR$/src/Helpers/RegexHandler.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Helpers/TraitChecker.php" afterPath="$PROJECT_DIR$/src/Helpers/TraitChecker.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Http/I_Session.php" afterPath="$PROJECT_DIR$/src/Http/I_Session.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Http/Session.php" afterPath="$PROJECT_DIR$/src/Http/Session.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Rendering/Engine/PhpHtmlRenderEngine.php" afterPath="$PROJECT_DIR$/src/Rendering/Engine/PhpHtmlRenderEngine.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Rendering/I_ViewRenderEngine.php" afterPath="$PROJECT_DIR$/src/Rendering/I_ViewRenderEngine.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Rendering/Renderer.php" afterPath="$PROJECT_DIR$/src/Rendering/Renderer.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Rendering/T_ViewRenderEngine.php" afterPath="$PROJECT_DIR$/src/Rendering/T_ViewRenderEngine.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Routing/Route.php" afterPath="$PROJECT_DIR$/src/Routing/Route.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Routing/Router.php" afterPath="$PROJECT_DIR$/src/Routing/Router.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/composer/autoload_classmap.php" afterPath="$PROJECT_DIR$/vendor/composer/autoload_classmap.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/composer/autoload_files.php" afterPath="$PROJECT_DIR$/vendor/composer/autoload_files.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" afterPath="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/composer/autoload_static.php" afterPath="$PROJECT_DIR$/vendor/composer/autoload_static.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/composer/installed.json" afterPath="$PROJECT_DIR$/vendor/composer/installed.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/README.md" afterPath="$PROJECT_DIR$/vendor/doctrine/instantiator/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/composer.json" afterPath="$PROJECT_DIR$/vendor/doctrine/instantiator/composer.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/src/Doctrine/Instantiator/Exception/InvalidArgumentException.php" afterPath="$PROJECT_DIR$/vendor/doctrine/instantiator/src/Doctrine/Instantiator/Exception/InvalidArgumentException.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/src/Doctrine/Instantiator/Exception/UnexpectedValueException.php" afterPath="$PROJECT_DIR$/vendor/doctrine/instantiator/src/Doctrine/Instantiator/Exception/UnexpectedValueException.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/doctrine/instantiator/src/Doctrine/Instantiator/Instantiator.php" afterPath="$PROJECT_DIR$/vendor/doctrine/instantiator/src/Doctrine/Instantiator/Instantiator.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/.php_cs" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/.php_cs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/ChangeLog-6.4.md" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/ChangeLog-6.4.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Assert.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Assert.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Constraint/JsonMatchesErrorMessageProvider.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Constraint/JsonMatchesErrorMessageProvider.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Constraint/LogicalAnd.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Constraint/LogicalAnd.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Constraint/LogicalOr.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Constraint/LogicalOr.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Constraint/LogicalXor.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Constraint/LogicalXor.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Constraint/TraversableContainsOnly.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/Constraint/TraversableContainsOnly.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/TestCase.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/TestCase.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/TestResult.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/TestResult.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/TestSuite.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Framework/TestSuite.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Runner/StandardTestSuiteLoader.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Runner/StandardTestSuiteLoader.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Runner/Version.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Runner/Version.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/TextUI/Command.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/TextUI/Command.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/TextUI/TestRunner.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/TextUI/TestRunner.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Util/Configuration.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Util/Configuration.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Util/Getopt.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Util/Getopt.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Util/PHP/AbstractPhpProcess.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Util/PHP/AbstractPhpProcess.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Util/Test.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Util/Test.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Util/Xml.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/src/Util/Xml.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/tests/Framework/Constraint/ArraySubsetTest.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/tests/Framework/Constraint/ArraySubsetTest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/tests/Framework/Constraint/JsonMatchesTest.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/tests/Framework/Constraint/JsonMatchesTest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/tests/Regression/GitHub/2591-separate-function-no-preserve-no-bootstrap-xdebug.phpt" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/tests/Regression/GitHub/2591-separate-function-no-preserve-no-bootstrap-xdebug.phpt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/tests/Regression/GitHub/2591-separate-function-no-preserve-no-bootstrap.phpt" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/tests/Regression/GitHub/2591-separate-function-no-preserve-no-bootstrap.phpt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/phpunit/phpunit/tests/Regression/GitHub/2591/bootstrapNoBootstrap.php" afterPath="$PROJECT_DIR$/vendor/phpunit/phpunit/tests/Regression/GitHub/2591/bootstrapNoBootstrap.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/Routing/RouterTest.php" afterPath="$PROJECT_DIR$/tests/Routing/RouterTest.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -116,11 +28,43 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/demo_public/index.php">
+      <file leaf-file-name="bootstrap.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/demo_dev/bootstrap.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="69">
-              <caret line="3" column="35" lean-forward="true" selection-start-line="3" selection-start-column="35" selection-end-line="3" selection-end-column="35" />
+            <state relative-caret-position="253">
+              <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+              <folding>
+                <element signature="e#78#106#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="routeLoaderGenerator.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/demo_dev/routeLoaderGenerator.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="437">
+              <caret line="22" column="27" lean-forward="false" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Session.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Http/Session.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="78">
+              <caret line="39" column="25" lean-forward="false" selection-start-line="39" selection-start-column="25" selection-end-line="39" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RouterTest.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tests/Routing/RouterTest.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="23">
+              <caret line="82" column="31" lean-forward="true" selection-start-line="82" selection-start-column="31" selection-end-line="82" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -159,7 +103,6 @@
         <option value="$PROJECT_DIR$/demo_dev/views/user/user.php" />
         <option value="$PROJECT_DIR$/tests/Http/SessionTest.php" />
         <option value="$PROJECT_DIR$/phpunit.xml" />
-        <option value="$PROJECT_DIR$/tests/Routing/RouterTest.php" />
         <option value="$PROJECT_DIR$/demo_dev/routes/error/404.php" />
         <option value="$PROJECT_DIR$/demo_dev/routes.php" />
         <option value="$PROJECT_DIR$/demo_dev/views/error/404.php" />
@@ -192,7 +135,6 @@
         <option value="$PROJECT_DIR$/src/Rendering/Renderer.php" />
         <option value="$PROJECT_DIR$/src/Routing/Route.php" />
         <option value="$PROJECT_DIR$/src/Routing/T_RouteLoader.php" />
-        <option value="$PROJECT_DIR$/src/Http/Session.php" />
         <option value="$PROJECT_DIR$/src/Http/I_Session.php" />
         <option value="$PROJECT_DIR$/src/Routing/Router.php" />
         <option value="$PROJECT_DIR$/src/Helpers/MagicalArray.php" />
@@ -201,6 +143,8 @@
         <option value="$PROJECT_DIR$/demo_dev/bootstrap.php" />
         <option value="$PROJECT_DIR$/src/Routing/RouteLoader.php" />
         <option value="$PROJECT_DIR$/demo_dev/dumpRouteLoader.sh" />
+        <option value="$PROJECT_DIR$/src/Http/Session.php" />
+        <option value="$PROJECT_DIR$/tests/Routing/RouterTest.php" />
       </list>
     </option>
   </component>
@@ -246,10 +190,10 @@
       <path value="$PROJECT_DIR$/vendor/guzzlehttp/psr7" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1382" />
+    <option name="width" value="1378" />
     <option name="height" value="744" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -299,6 +243,11 @@
             <path>
               <item name="whitebox" type="b2602c69:ProjectViewProjectNode" />
               <item name="whitebox" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="whitebox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="whitebox" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
           </expand>
           <select />
@@ -374,32 +323,19 @@
       <workItem from="1510165281716" duration="10496000" />
       <workItem from="1510176360969" duration="637000" />
       <workItem from="1510246209660" duration="5846000" />
-      <workItem from="1510255346899" duration="4509000" />
+      <workItem from="1510255346899" duration="5712000" />
     </task>
+    <task id="LOCAL-00001" summary="Refactored several parts, cleaned up code, updated from PHP7.0.1 to PHP7.1.11">
+      <created>1510261087451</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1510261087451</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="tests - 2017.11.07 at 13h 06m 41s.xml">
-      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
-    <history-entry file="tests - 2017.11.07 at 13h 13m 32s.xml">
-      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
-    <history-entry file="tests - 2017.11.07 at 13h 23m 55s.xml">
-      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
-    <history-entry file="tests - 2017.11.07 at 15h 16m 26s.xml">
-      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
-    <history-entry file="tests - 2017.11.07 at 15h 17m 12s.xml">
-      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
-    <history-entry file="tests - 2017.11.07 at 15h 55m 57s.xml">
-      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
-    <history-entry file="tests - 2017.11.07 at 16h 35m 12s.xml">
-      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
     <history-entry file="tests - 2017.11.07 at 18h 53m 05s.xml">
       <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
     </history-entry>
@@ -409,14 +345,35 @@
     <history-entry file="tests - 2017.11.07 at 21h 52m 08s.xml">
       <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
     </history-entry>
+    <history-entry file="tests - 2017.11.09 at 22h 02m 09s.xml">
+      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
+    <history-entry file="tests - 2017.11.09 at 22h 02m 49s.xml">
+      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
+    <history-entry file="tests - 2017.11.09 at 22h 03m 05s.xml">
+      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
+    <history-entry file="tests - 2017.11.09 at 22h 05m 43s.xml">
+      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
+    <history-entry file="tests - 2017.11.09 at 22h 11m 25s.xml">
+      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
+    <history-entry file="tests - 2017.11.09 at 22h 13m 41s.xml">
+      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
+    <history-entry file="tests - 2017.11.09 at 22h 14m 34s.xml">
+      <configuration name="tests" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="86661000" />
+    <option name="totallyTimeSpent" value="87864000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1378" height="744" extended-state="0" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17715959" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17767988" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -425,7 +382,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.289644" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.512945" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="PHP-CGI Server" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -444,6 +401,10 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Refactored several parts, cleaned up code, updated from PHP7.0.1 to PHP7.1.11" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored several parts, cleaned up code, updated from PHP7.0.1 to PHP7.1.11" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <option name="time" value="1" />
@@ -455,13 +416,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="46">
           <caret line="2" column="0" lean-forward="true" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/Routing/RouteTest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-437">
-          <caret line="10" column="37" lean-forward="false" selection-start-line="10" selection-start-column="37" selection-end-line="10" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -479,25 +433,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/phpunit.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="122">
-          <caret line="11" column="22" lean-forward="false" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/Http/SessionTest.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="92">
           <caret line="25" column="38" lean-forward="true" selection-start-line="25" selection-start-column="38" selection-end-line="25" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/Routing/RouterTest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -597,6 +536,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-11109">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -604,6 +544,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
           <caret line="13" column="27" lean-forward="false" selection-start-line="13" selection-start-column="27" selection-end-line="13" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -619,6 +560,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="254">
           <caret line="34" column="25" lean-forward="true" selection-start-line="34" selection-start-column="25" selection-end-line="34" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -626,6 +568,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
           <caret line="19" column="1" lean-forward="true" selection-start-line="19" selection-start-column="1" selection-end-line="19" selection-end-column="1" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -641,6 +584,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="23" column="53" lean-forward="false" selection-start-line="23" selection-start-column="53" selection-end-line="23" selection-end-column="53" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -648,6 +592,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="276">
           <caret line="14" column="7" lean-forward="true" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -655,6 +600,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="277">
           <caret line="46" column="49" lean-forward="false" selection-start-line="46" selection-start-column="49" selection-end-line="46" selection-end-column="49" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -662,6 +608,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="89" column="76" lean-forward="false" selection-start-line="89" selection-start-column="76" selection-end-line="89" selection-end-column="76" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -669,6 +616,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
           <caret line="166" column="46" lean-forward="false" selection-start-line="166" selection-start-column="46" selection-end-line="166" selection-end-column="46" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -676,6 +624,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="184">
           <caret line="13" column="22" lean-forward="false" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -683,13 +632,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="116">
           <caret line="18" column="53" lean-forward="false" selection-start-line="18" selection-start-column="53" selection-end-line="18" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Http/Session.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="472">
-          <caret line="66" column="58" lean-forward="false" selection-start-line="66" selection-start-column="58" selection-end-line="66" selection-end-column="58" />
           <folding />
         </state>
       </provider>
@@ -698,6 +640,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="472">
           <caret line="66" column="57" lean-forward="false" selection-start-line="66" selection-start-column="57" selection-end-line="66" selection-end-column="57" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -705,6 +648,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="368">
           <caret line="16" column="63" lean-forward="false" selection-start-line="16" selection-start-column="63" selection-end-line="16" selection-end-column="63" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -720,6 +664,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="368">
           <caret line="16" column="72" lean-forward="false" selection-start-line="16" selection-start-column="72" selection-end-line="16" selection-end-column="72" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -727,14 +672,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="346">
           <caret line="183" column="45" lean-forward="false" selection-start-line="183" selection-start-column="45" selection-end-line="183" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Routing/Router.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1333">
-          <caret line="281" column="5" lean-forward="false" selection-start-line="281" selection-start-column="5" selection-end-line="281" selection-end-column="5" />
           <folding />
         </state>
       </provider>
@@ -780,18 +717,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/demo_dev/routeLoaderGenerator.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="6" column="1" lean-forward="true" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Routing/RouteLoader.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="208">
           <caret line="64" column="31" lean-forward="false" selection-start-line="64" selection-start-column="31" selection-end-line="64" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo_public/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="69">
+          <caret line="3" column="35" lean-forward="true" selection-start-line="3" selection-start-column="35" selection-end-line="3" selection-end-column="35" />
           <folding />
         </state>
       </provider>
@@ -806,10 +743,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/demo_public/index.php">
+    <entry file="file://$PROJECT_DIR$/tests/Routing/RouteTest.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="69">
-          <caret line="3" column="35" lean-forward="true" selection-start-line="3" selection-start-column="35" selection-end-line="3" selection-end-column="35" />
+        <state relative-caret-position="-92">
+          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo_dev/routeLoaderGenerator.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="22" column="27" lean-forward="false" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Http/Session.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="78">
+          <caret line="39" column="25" lean-forward="false" selection-start-line="39" selection-start-column="25" selection-end-line="39" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phpunit.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="11" column="22" lean-forward="false" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Routing/Router.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="86">
+          <caret line="346" column="0" lean-forward="false" selection-start-line="346" selection-start-column="0" selection-end-line="346" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/Routing/RouterTest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="82" column="31" lean-forward="true" selection-start-line="82" selection-start-column="31" selection-end-line="82" selection-end-column="31" />
           <folding />
         </state>
       </provider>
