@@ -1,14 +1,23 @@
 <?php
+/////////////////////////////////////////////////////////////////////////
+//Namespace
+/////////////////////////////////////////////////////////////////////////
 namespace WhiteBox\Routing;
 
+
+
+/////////////////////////////////////////////////////////////////////////
+//Imports
+/////////////////////////////////////////////////////////////////////////
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use WhiteBox\Helpers\RegexHandler;
 use WhiteBox\Http\AdvancedRequest;
+use WhiteBox\Http\HttpRedirectType;
 use WhiteBox\Routing\Route;
+
+
 
 /**A class representing a router in a routing system
  * Class Router
@@ -279,17 +288,16 @@ class Router{
      * @return mixed
      */
     protected function handleRequest(ServerRequestInterface $request){
-        $request = AdvancedRequest::fromGlobals();
         $method = $request->getMethod();
         $routes = $this->getRoutesForMethod($method);
-        $uri = $request->requestURI();
+        $uri = $request->getUri()->getPath();
 
         $trimmed_uri = rtrim($uri, "/"); //Removes the trailing slash if there's one, not if root though
         if($trimmed_uri == "")//If the trimmed string is empty, it was the root that was requested
             $trimmed_uri = "/"; //Then replace it with the root
 
         if($uri != $trimmed_uri) //If the trimmed version is different, then permanent redirect
-            return $this->redirect($trimmed_uri, 301);
+            $this->redirect($trimmed_uri, 301) and die();
 
         $route = array_reduce($routes, function($acc, Route $route) use($uri){
             $regex = new RegexHandler( self::makeRegex($route->regex()) );
@@ -341,10 +349,13 @@ class Router{
 
     /**Redirects to a given URL
      * @param string $url being the URL to redirect to
-     * @param int $status
+     * @param HttpRedirectType $status
      */
-    public function redirect(string $url, int $status = 302): void{
-        header("Location: {$url}", true, $status);
+    public function redirect(string $url, ?HttpRedirectType $status = null): void{
+        if(is_null($status))
+            $status = HttpRedirectType::FOUND();
+
+        header("Location: {$url}", true, $status->getCode());
     }
 
     /**Redirects to the URL of the Route that has the given routeName

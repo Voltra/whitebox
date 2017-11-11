@@ -1,7 +1,14 @@
 <?php
-
+/////////////////////////////////////////////////////////////////////////
+//Namespace
+/////////////////////////////////////////////////////////////////////////
 namespace WhiteBox\Helpers;
 
+
+
+/////////////////////////////////////////////////////////////////////////
+//Imports
+/////////////////////////////////////////////////////////////////////////
 use ArrayAccess;
 use ArrayIterator;
 use Countable;
@@ -9,6 +16,8 @@ use IteratorAggregate;
 use Serializable;
 use Traversable;
 use WhiteBox\Helpers\I_JsonSerializable;
+
+
 
 /**A class that aims to be a nice replacement to the native PHP array
  * Class MagicalArray
@@ -59,41 +68,50 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
     /////////////////////////////////////////////////////////////////////////
     /**Apply the collection reduction algorithm to this MagicalArray
      * @param callable $reducer being the reducer function used, must be (acc_type, element_type)->newAcc_type
-     * @param mixed $acc being the default value of the accumulator
+     * @param $acc
      * @return mixed
+     * @internal param mixed $accu being the default value of the accumulator
      */
     public function reduce(callable $reducer, $acc){
-        //return new MagicalArray(array_reduce($this->array, $reducer, $acc));
-
-        foreach ($this as $elem)
-            $acc = $reducer($acc, $elem);
+        foreach ($this as $key=>$value)
+            $acc = $reducer($acc, $value, $key);
 
         return $acc;
     }
 
     /**Apply the collection mapping algorithm to this MagicalArray
-     * @param callable $mapper being the mapper function, must be (element_type)->newElement_type
+     * @param callable $mapper being the mapper function, must be (element_type, ?key_type)->newElement_type
      * @return MagicalArray
      */
     public function map(callable $mapper): self{
         //return new MagicalArray( array_map($mapper, $this->array) );
         $arr = [];
-        foreach($this as $elem)
-            $arr[] = $mapper($elem);
+        $is_assoc = ArrayHelper::is_assoc($this->array);
+        foreach($this as $key=>$value) {
+            if($is_assoc)
+                $arr[$key] = $mapper($value, $key);
+            else
+                $arr[] = $mapper($value, $key);
+        }
 
         return new MagicalArray($arr, $this->default);
     }
 
     /**Apply the collection filtering algorithm to this MagicalArray
-     * @param callable $predicate being the predicate used to keep elements, must be (element_type)->bool
+     * @param callable $predicate being the predicate used to keep elements, must be (element_type, ?key_type)->bool
      * @return MagicalArray
      */
     public function filter(callable $predicate): self{
         //return new MagicalArray( array_filter($this->array, $predicate) );
         $arr = [];
-        foreach ($this as $elem) {
-            if ($predicate($elem))
-                $arr[] = $elem;
+        $is_assoc = ArrayHelper::is_assoc($this->array);
+        foreach ($this as $key=>$value) {
+            if ($predicate($value, $key)) {
+                if($is_assoc)
+                    $arr[$key] = $value;
+                else
+                    $arr[] = $value;
+            }
         }
 
         return new MagicalArray($arr, $this->default);
@@ -104,8 +122,8 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @return $this
      */
     public function forEach(callable $procedure): self{
-        foreach($this->array as $elem)
-            $procedure($elem);
+        foreach($this->array as $key=>$value)
+            $procedure($value, $key);
 
         return $this;
     }

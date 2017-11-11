@@ -3,10 +3,18 @@ namespace Test\Routing;
 
 use phpmock\MockBuilder;
 use PHPUnit\Framework\TestCase as PHPUnit;
+use WhiteBox\Helpers\NamespaceResolver;
 use WhiteBox\Routing\Router;
 
 class RouterTest extends PHPUnit{
+    public static $NAMESPACE;
+
     public static $location;
+
+    public function setUp(){
+        parent::setUp();
+        self::$NAMESPACE = NamespaceResolver::getFrom(Router::class);
+    }
 
     public static function mock(string $name, callable $functor, string $namespace = ""){
         return (new MockBuilder())
@@ -55,7 +63,7 @@ class RouterTest extends PHPUnit{
                 //return "{$str}";
                 self::$location = $str;
             },
-            "WhiteBox\\Routing\\"
+            self::$NAMESPACE
         );
 
         $mock->enable();
@@ -82,7 +90,7 @@ class RouterTest extends PHPUnit{
                 //return "{$str}";
                 self::$location = $str;
             },
-            "WhiteBox\\Routing\\"
+            self::$NAMESPACE
         );
         $mock->enable();
 

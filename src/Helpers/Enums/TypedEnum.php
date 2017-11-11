@@ -2,29 +2,27 @@
 /////////////////////////////////////////////////////////////////////////
 //Namespace
 /////////////////////////////////////////////////////////////////////////
-namespace WhiteBox\Filesystem;
+namespace WhiteBox\Helpers\Enums;
 
 
 
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
-use IteratorAggregate;
-use WhiteBox\Helpers\I_MagicalArrayable;
+use WhiteBox\Helpers\Enums\Enum;
 
 
-
-/**An interface used to represent a a filesystem browser (browsing the filesystem)
- * Interface I_FSBrowser
- * @package WhiteBox\Filesystem
+/**An Enum that wants to be restricted to a certain type
+ * Class TypedEnum
+ * @package WhiteBox\Helpers\Enums
  */
-interface I_FSBrowser extends IteratorAggregate, I_MagicalArrayable {
+abstract class TypedEnum extends Enum{
     /////////////////////////////////////////////////////////////////////////
-    //Magics
+    //Overrides
     /////////////////////////////////////////////////////////////////////////
-    /**Instantiate from a URI
-     * I_FSBrowser constructor.
-     * @param string $uri being the URI to load from
-     */
-    public function __construct(string $uri);
+    public static function toArray(): array{
+        return array_filter(parent::toArray(), [static::class, "isOfCorrectType"]);
+    }
+
+    public abstract static function isOfCorrectType($value): bool;
 }

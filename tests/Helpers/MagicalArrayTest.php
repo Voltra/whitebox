@@ -124,4 +124,73 @@ class MagicalArrayTest extends PHPUnit{
             "'forEach' doesn't work properly"
         );
     }
+
+
+    public function testFilterAssoc(){
+        $arr = new MagicalArray([
+            "a" => 1,
+            "b" => 2,
+            "c" => 3
+        ]);
+
+        $expected = new MagicalArray([
+            "b" => 2
+        ]);
+
+        self::assertEquals(
+            $expected,
+            $arr->filter(function($value, $key){ return $value%2 === 0; }),
+            "filter doesn't work with associative arrays"
+        );
+    }
+
+    public function testMapAssoc(){
+        $arr = new MagicalArray([
+            "a" => 1,
+            "b" => 2
+        ]);
+
+        $exp = new MagicalArray([
+            "a" => 2,
+            "b" => 4
+        ]);
+
+        self::assertEquals(
+            $exp,
+            $arr->map(function($value, $key){ return $value*2; }),
+            "map doesn't work with associative arrays"
+        );
+    }
+
+    public function testReduceAssoc(){
+        $arr = new MagicalArray([
+            "a" => 1,
+            "b" => 2,
+            "c" => 3
+        ]);
+
+        self::assertEquals(
+            6,
+            $arr->reduce(function($acc, $elem, $key){ return $acc+$elem; }, 0),
+            "reduce doesn't work with associative arrays"
+        );
+    }
+
+    public function testForeachAssoc(){
+        $arr = new MagicalArray([
+            "a" => 1,
+            "b" => 2
+        ]);
+        $this->str = "";
+
+        $arr->forEach(function($elem, $key){
+            $this->str .= "{$key}";
+        });
+
+        self::assertEquals(
+            "ab",
+            $this->str,
+            "forEach doesn't work for associative arrays"
+        );
+    }
 }

@@ -2,29 +2,25 @@
 /////////////////////////////////////////////////////////////////////////
 //Namespace
 /////////////////////////////////////////////////////////////////////////
-namespace WhiteBox\Filesystem;
-
+namespace WhiteBox\Helpers\Enums;
 
 
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
-use IteratorAggregate;
-use WhiteBox\Helpers\I_MagicalArrayable;
+use WhiteBox\Helpers\Enums\TypedEnum;
 
 
 
-/**An interface used to represent a a filesystem browser (browsing the filesystem)
- * Interface I_FSBrowser
- * @package WhiteBox\Filesystem
+/**A TypedEnum of strings
+ * Class StringEnum
+ * @package WhiteBox\Helpers\Enums
  */
-interface I_FSBrowser extends IteratorAggregate, I_MagicalArrayable {
+abstract class StringEnum extends TypedEnum{
     /////////////////////////////////////////////////////////////////////////
-    //Magics
+    //Overrides
     /////////////////////////////////////////////////////////////////////////
-    /**Instantiate from a URI
-     * I_FSBrowser constructor.
-     * @param string $uri being the URI to load from
-     */
-    public function __construct(string $uri);
+    public final static function isOfCorrectType($value): bool{
+        return (bool)is_string($value);
+    }
 }

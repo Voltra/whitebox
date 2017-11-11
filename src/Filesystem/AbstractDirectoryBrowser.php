@@ -1,6 +1,14 @@
 <?php
+/////////////////////////////////////////////////////////////////////////
+//Namespace
+/////////////////////////////////////////////////////////////////////////
 namespace WhiteBox\Filesystem;
 
+
+
+/////////////////////////////////////////////////////////////////////////
+//Imports
+/////////////////////////////////////////////////////////////////////////
 use Exception;
 use WhiteBox\Helpers\MagicalArray;
 
@@ -28,8 +36,10 @@ abstract class AbstractDirectoryBrowser implements I_FSBrowser{
      * @throws Exception
      */
     public function __construct(string $uri){
-        if(!is_dir($uri))
-            throw new Exception("Tried to construct a {self::class} providing the URI to a non-folder.");
+        if(!is_dir($uri)) {
+            $class = self::class;
+            throw new Exception("Tried to construct a {$class} providing the URI to a non-folder.");
+        }
 
         $this->uri = $uri;
     }

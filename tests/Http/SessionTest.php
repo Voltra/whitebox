@@ -3,6 +3,7 @@ namespace Test\Http;
 
 use phpmock\MockBuilder;
 use PHPUnit\Framework\TestCase as PHPUnit;
+use WhiteBox\Helpers\NamespaceResolver;
 use WhiteBox\Http\Session;
 
 class SessionTest extends PHPUnit{
@@ -47,7 +48,7 @@ class SessionTest extends PHPUnit{
                 if(session_status() !== PHP_SESSION_ACTIVE)
                     SessionTest::setSessionStatus(PHP_SESSION_ACTIVE);
             },
-            "WhiteBox\\Http\\"
+            NamespaceResolver::getFrom(Session::class)
         );
 
         $this->local__session_abort = self::mock(
@@ -64,7 +65,7 @@ class SessionTest extends PHPUnit{
                 if(session_status() === PHP_SESSION_ACTIVE)
                     SessionTest::setSessionStatus(PHP_SESSION_NONE);
             },
-            "WhiteBox\\Http\\"
+            NamespaceResolver::getFrom(Session::class)
         );
 
         $this->local__session_status = self::mock(
@@ -79,7 +80,7 @@ class SessionTest extends PHPUnit{
             function(){
                 return SessionTest::$sstatus;
             },
-            "WhiteBox\\Http\\"
+            NamespaceResolver::getFrom(Session::class)
         );
     }
 
