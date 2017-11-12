@@ -2,15 +2,14 @@
 /////////////////////////////////////////////////////////////////////////
 //Namespace
 /////////////////////////////////////////////////////////////////////////
-namespace WhiteBox\Routing;
+namespace WhiteBox\Routing\Abstractions;
 
 
 
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
-use WhiteBox\Routing\Route;
-
+use WhiteBox\Routing\Router;
 
 
 /**A trait used to represent a route loader
@@ -45,10 +44,10 @@ trait T_RouteLoader{
     //Methods
     /////////////////////////////////////////////////////////////////////////
     /**Loads all the routes located in the path
-     * @param Router $router being the Router to add the routes to
+     * @param A_RouteManager $manager being the A_RouteManager to add the routes to
      * @return void
      */
-    public abstract function loadRoutes(Router $router): void;
+    public abstract function loadRoutes(A_RouteManager $manager): void;
 
     /**
      * @param string $fileURI

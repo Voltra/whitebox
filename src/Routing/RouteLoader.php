@@ -12,6 +12,8 @@ namespace WhiteBox\Routing;
 use WhiteBox\Filesystem\RecursiveDirectoryBrowser;
 use Exception;
 use WhiteBox\Helpers\MagicalArray;
+use WhiteBox\Routing\Abstractions\A_RouteManager;
+use WhiteBox\Routing\Abstractions\T_RouteLoader;
 use WhiteBox\Routing\Router;
 
 
@@ -31,14 +33,14 @@ class RouteLoader{
     /////////////////////////////////////////////////////////////////////////
     /**Loads all the routes located in the path (use this only in case of extreme emergency/bad code)
      * Use this inside your code
-     * @param Router $router being the Router to add the routes to
+     * @param A_RouteManager $manager being the A_RouteManager to add the routes to
      * @param string $alias being the name of the Router as used in the route declaration files
      * @return void
      */
-    public function loadRoutes(Router $router, string $alias): void{
+    public function loadRoutes(A_RouteManager $manager, string $alias): void{
         $this->getPhpFiles()
-        ->forEach(function(string $phpFile) use($router, $alias){
-            ${$alias} = $router;
+        ->forEach(function(string $phpFile) use($manager, $alias){
+            ${$alias} = $manager;
             require_once "{$phpFile}";
         });
     }

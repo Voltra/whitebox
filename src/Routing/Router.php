@@ -9,12 +9,12 @@ namespace WhiteBox\Routing;
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 use WhiteBox\Helpers\RegexHandler;
-use WhiteBox\Http\AdvancedRequest;
 use WhiteBox\Http\HttpRedirectType;
+use WhiteBox\Routing\Abstractions\A_WildcardBasedRouteManager;
+use WhiteBox\Routing\Abstractions\T_RouteDispatcher;
 use WhiteBox\Routing\Route;
 
 
@@ -23,12 +23,19 @@ use WhiteBox\Routing\Route;
  * Class Router
  * @package WhiteBox\Routing
  */
-class Router{
+class Router extends A_WildcardBasedRouteManager{
+    /////////////////////////////////////////////////////////////////////////
+    //Traits used
+    /////////////////////////////////////////////////////////////////////////
+    use T_RouteDispatcher;
+
+
+
     /////////////////////////////////////////////////////////////////////////
     //Properties
     /////////////////////////////////////////////////////////////////////////
     /**The routes registered in this Router
-     * @var array
+     * @var Route[]
      */
     protected $routes;
 
@@ -60,12 +67,65 @@ class Router{
      */
     private static $isInitialized = false;
 
+
     /////////////////////////////////////////////////////////////////////////
-    //Class methods
+    //Magics
+    /////////////////////////////////////////////////////////////////////////
+    /**Construct a Router
+     * Router constructor.
+     */
+    public function __construct(){
+        $this->routes = [
+            new Route("error", "404", function(){ echo "<b>Error 404</b>"; })
+        ];
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Methods
+    /////////////////////////////////////////////////////////////////////////
+    /**Retrieves the regex/URL associated to the Route that has the given routeName
+     * @param string $routeName being the name of the Route to lookup the url for
+     * @return string
+     */
+    public function urlFor(string $routeName): string{
+        $name = "{$routeName}";
+
+        foreach($this->routes as $route){
+            if($route->getName() === $name)
+                return $route->regex();
+        }
+
+        return "";
+    }
+
+    /**Redirects to a given URL
+     * @param string $url being the URL to redirect to
+     * @param HttpRedirectType $status
+     */
+    public function redirect(string $url, ?HttpRedirectType $status = null): void{
+        if(is_null($status))
+            $status = HttpRedirectType::FOUND();
+
+        header("Location: {$url}", true, $status->getCode());
+    }
+
+    /**Redirects to the URL of the Route that has the given routeName
+     * @param string $routeName being the name of the Route to redirect to
+     */
+    public function redirectTo(string $routeName): void{
+        $this->redirect( $this->urlFor($routeName) );
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Overrides
     /////////////////////////////////////////////////////////////////////////
     /**A static method initializing the core wildcards if they are not initialized
      */
-    public static function initCore(): void{
+    public static function initCoreWildcards(): void{
         if(!self::$isInitialized) {
             self::$coreWildcards = array_keys(self::$wildcards);
             self::$isInitialized = true;
@@ -108,7 +168,7 @@ class Router{
      * @param string $uri_regex being the Route's regex
      * @return string
      */
-    public static function makeRegex(string $uri_regex){
+    protected static function makeRegex(string $uri_regex): string{
         return "/^" . str_replace("/", "\/", self::masksToRegex($uri_regex)) . "$/";
     }
 
@@ -130,25 +190,11 @@ class Router{
      * @param string $uri_regex being the Route's regex
      * @return array
      */
-    public static function uriParams(string $uri, string $uri_regex): array{
+    protected static function uriParams(string $uri, string $uri_regex): array{
         $uri_regex = self::masksToRegex($uri_regex);
         $regex = new RegexHandler(self::makeRegex($uri_regex));
 
         return $regex->getGroups($uri);
-    }
-
-
-
-    /////////////////////////////////////////////////////////////////////////
-    //Magics
-    /////////////////////////////////////////////////////////////////////////
-    /**Construct a Router
-     * Router constructor.
-     */
-    public function __construct(){
-        $this->routes = [
-            new Route("error", "404", function(){ echo "<b>Error 404</b>"; })
-        ];
     }
 
     /**Determines whether or not this Router has a given Route (from a method and a regex)
@@ -187,7 +233,7 @@ class Router{
 
     /**Retrieves the array of Route which method's is the given method
      * @param string $method being the given method
-     * @return array
+     * @return Route[]
      */
     protected function getRoutesForMethod(string $method): array{
         if(in_array($method, Route::METHODS, true)){
@@ -198,6 +244,15 @@ class Router{
             return [];
     }
 
+    /**Adds a Route to this T_RouteStore
+     * @param Route $route being the route that is being added to this T_RouteStore
+     * @return $this
+     */
+    protected function addRoute(Route $route){
+        $this->routes[] = $route;
+        return $this;
+    }
+
     /**Sets up a Route in this Router
      * @param string $method being the Route's method
      * @param string $re being the Route's regular expression
@@ -205,7 +260,7 @@ class Router{
      * @param callable|null $authMiddleware being the Route's middleware
      * @return Route
      */
-    protected function setupRoute(string $method, string $re, callable $functor, callable $authMiddleware = null): Route{
+    protected function setupRoute(string $method, string $re, callable $functor, ?callable $authMiddleware = null): Route{
         if($this->hasRoute($method, $re)){
             $route =  $this->getRoute($method, $re);
             if(!is_null($route)) {
@@ -219,67 +274,14 @@ class Router{
         }
         //otherwise
         //push it to the arrays
-        $this->routes[] = new Route($method, $re);
-        $route = $this->getRoute($method, $re);
+        $route = new Route($method, $re);
+        $this->addRoute($route);
         $route->setHandler($functor);
 
         if(!is_null($authMiddleware))
             $route->setAuthMiddleware($authMiddleware);
 
         return $route;
-    }
-
-    /** Replaces the handler for the error 404 page
-     * @param $functor - the functor called when a page is not found
-     *
-     * @return Route
-     */
-    public function error404(callable $functor): Route{
-        return $this->setupRoute("error", "404", $functor);
-    }
-
-    /** Replaces the handler for the given route when accessed via the GET method
-     * @param string $route - a string designating the complete route (including the website root, eg. "/user")
-     * @param callable $functor - a callable object/function to be called when the route is requested
-     *
-     * @param callable|null $authMiddleware
-     * @return \WhiteBox\Routing\Route
-     */
-    public function get(string $route, callable $functor, callable $authMiddleware = null): Route{
-        return $this->setupRoute("GET", $route, $functor, $authMiddleware);
-    }
-
-    /** Replaces the handler for the given route when accessed via the POST method
-     * @param string $route - a string designating the complete route (including the website root, eg. "/user")
-     * @param callable $functor - a callable object/function to be called when the route is requested
-     *
-     * @param callable|null $authMiddleware
-     * @return \WhiteBox\Routing\Route
-     */
-    public function post(string $route, callable $functor, callable $authMiddleware = null): Route{
-        return $this->setupRoute("POST", $route, $functor, $authMiddleware);
-    }
-
-    /** Replaces the handler for the given route when accessed via the PUT method
-     * @param string $route - a string designating the complete route (including the website root, eg. "/user")
-     * @param callable $functor - a callable object/function to be called when the route is requested
-     *
-     * @param callable|null $authMiddleware
-     * @return \WhiteBox\Routing\Route
-     */
-    public function put(string $route, callable $functor, callable $authMiddleware = null): Route{
-        return $this->setupRoute("PUT", $route, $functor, $authMiddleware);
-    }
-
-    /** Replaces the handler for the given route when accessed via the HEAD method
-     * @param string $route - a string designating the complete route (including the website root, eg. "/user")
-     * @param callable $functor - a callable object/function to be called when the route is requested
-     *
-     * @param callable|null $authMiddleware
-     * @return \WhiteBox\Routing\Route
-     */
-    public function head(string $route, callable $functor, callable $authMiddleware = null): Route{
-        return $this->setupRoute("HEAD", $route, $functor, $authMiddleware);
     }
 
 
@@ -325,45 +327,12 @@ class Router{
     /**Runs this Router
      * @param ServerRequestInterface|null $request
      */
-    public function run(ServerRequestInterface $request = null){
+    public function run(?ServerRequestInterface $request = null){
         if(is_null($request))
             $request = ServerRequest::fromGlobals();
 
         $this->handleRequest($request);
     }
-
-    /**Retrieves the regex/URL associated to the Route that has the given routeName
-     * @param string $routeName being the name of the Route to lookup the url for
-     * @return string
-     */
-    public function urlFor(string $routeName): string{
-        $name = "{$routeName}";
-
-        foreach($this->routes as $route){
-            if($route->getName() === $name)
-                return $route->regex();
-        }
-
-        return "";
-    }
-
-    /**Redirects to a given URL
-     * @param string $url being the URL to redirect to
-     * @param HttpRedirectType $status
-     */
-    public function redirect(string $url, ?HttpRedirectType $status = null): void{
-        if(is_null($status))
-            $status = HttpRedirectType::FOUND();
-
-        header("Location: {$url}", true, $status->getCode());
-    }
-
-    /**Redirects to the URL of the Route that has the given routeName
-     * @param string $routeName being the name of the Route to redirect to
-     */
-    public function redirectTo(string $routeName): void{
-        $this->redirect( $this->urlFor($routeName) );
-    }
 }
 
-Router::initCore(); //Initialize the core wildcards
+Router::initCoreWildcards(); //Initialize the core wildcards
