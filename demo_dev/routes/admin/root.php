@@ -24,9 +24,15 @@ function isAdmin(){
     return genRandomBoolGenerator();
 }
 
-$app->get("/admin", function(){
+$admin->get("/", function(){
     Renderer::renderView("admin/root.php", [
         "admin" => "OMAGAD YOU AN ADMIN?",
         "phpversion" => phpversion()
     ]);
-}, isAdmin());
+}/*, isAdmin() genFalseGenerator()*/);
+
+$admin->get("/dashboard", function(){
+    Renderer::renderView("admin/dashboard.php", [
+        "phpversion" => phpversion()
+    ]);
+});

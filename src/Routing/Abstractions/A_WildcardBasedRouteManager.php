@@ -9,19 +9,20 @@ namespace WhiteBox\Routing\Abstractions;
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
-use WhiteBox\Routing\Abstractions\A_RouteManager;
+use WhiteBox\Routing\Abstractions\T_RouteManager;
 use WhiteBox\Routing\Abstractions\I_WildcardBasedRouteSystem;
 use WhiteBox\Routing\Abstractions\T_RouteRegexCompiler;
 
 
 
 /**Represents an object that manages Route instances that use wildcards
- * Class A_WildcardBasedRouteManager
+ * Class T_WildcardBasedRouteManager
  * @package WhiteBox\Routing\Abstractions
  */
-abstract class A_WildcardBasedRouteManager extends A_RouteManager implements I_WildcardBasedRouteSystem{
+abstract class A_WildcardBasedRouteManager implements I_WildcardBasedRouteSystem{
     /////////////////////////////////////////////////////////////////////////
     //Traits used
     /////////////////////////////////////////////////////////////////////////
     use T_RouteRegexCompiler;
+    use T_RouteManager;
 }

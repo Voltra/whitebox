@@ -10,11 +10,12 @@ namespace WhiteBox\Routing;
 //Imports
 /////////////////////////////////////////////////////////////////////////
 use GuzzleHttp\Psr7\ServerRequest;
+use PHPUnit\Runner\Exception;
 use Psr\Http\Message\ServerRequestInterface;
 use WhiteBox\Helpers\RegexHandler;
 use WhiteBox\Http\HttpRedirectType;
-use WhiteBox\Routing\Abstractions\A_WildcardBasedRouteManager;
-use WhiteBox\Routing\Abstractions\T_RouteDispatcher;
+use WhiteBox\Routing\Abstractions\A_CisRouter;
+use WhiteBox\Routing\Abstractions\A_MetaRouter;
 use WhiteBox\Routing\Route;
 
 
@@ -23,65 +24,7 @@ use WhiteBox\Routing\Route;
  * Class Router
  * @package WhiteBox\Routing
  */
-class Router extends A_WildcardBasedRouteManager{
-    /////////////////////////////////////////////////////////////////////////
-    //Traits used
-    /////////////////////////////////////////////////////////////////////////
-    use T_RouteDispatcher;
-
-
-
-    /////////////////////////////////////////////////////////////////////////
-    //Properties
-    /////////////////////////////////////////////////////////////////////////
-    /**The routes registered in this Router
-     * @var Route[]
-     */
-    protected $routes;
-
-
-
-    /////////////////////////////////////////////////////////////////////////
-    //Class properties
-    /////////////////////////////////////////////////////////////////////////
-    /**The default wildcards used to ease the regex experience for routes
-     * @var array
-     */
-    protected static $wildcards = [
-        "/:ALNUM/" => "([A-Z0-9_]+)",
-        "/:alnum/" => "([a-z0-9_]+)",
-        "/:word/" => "(\w+)",
-        "/:digit[^s]*/" => "(\d)", //only matches "digit" and not "digits" => digit not followed by an s
-        "/:digits/" => "(\d+)",
-        "/:alpha/" => "([a-z]+)",
-        "/:ALPHA/" => "([A-Z]+)"
-    ];
-
-    /**The core wildcards (keys)
-     * @var array
-     */
-    private static $coreWildcards = null;
-
-    /**Determines whether or not the Router's core wildcards are registered or not
-     * @var bool
-     */
-    private static $isInitialized = false;
-
-
-    /////////////////////////////////////////////////////////////////////////
-    //Magics
-    /////////////////////////////////////////////////////////////////////////
-    /**Construct a Router
-     * Router constructor.
-     */
-    public function __construct(){
-        $this->routes = [
-            new Route("error", "404", function(){ echo "<b>Error 404</b>"; })
-        ];
-    }
-
-
-
+class Router extends A_MetaRouter {
     /////////////////////////////////////////////////////////////////////////
     //Methods
     /////////////////////////////////////////////////////////////////////////
@@ -89,11 +32,11 @@ class Router extends A_WildcardBasedRouteManager{
      * @param string $routeName being the name of the Route to lookup the url for
      * @return string
      */
-    public function urlFor(string $routeName): string{
+    public function urlFor(string $routeName): string {
         $name = "{$routeName}";
 
-        foreach($this->routes as $route){
-            if($route->getName() === $name)
+        foreach ($this->routes as $route) {
+            if ($route->getName() === $name)
                 return $route->regex();
         }
 
@@ -104,8 +47,8 @@ class Router extends A_WildcardBasedRouteManager{
      * @param string $url being the URL to redirect to
      * @param HttpRedirectType $status
      */
-    public function redirect(string $url, ?HttpRedirectType $status = null): void{
-        if(is_null($status))
+    public function redirect(string $url, ?HttpRedirectType $status = null): void {
+        if (is_null($status))
             $status = HttpRedirectType::FOUND();
 
         header("Location: {$url}", true, $status->getCode());
@@ -114,8 +57,8 @@ class Router extends A_WildcardBasedRouteManager{
     /**Redirects to the URL of the Route that has the given routeName
      * @param string $routeName being the name of the Route to redirect to
      */
-    public function redirectTo(string $routeName): void{
-        $this->redirect( $this->urlFor($routeName) );
+    public function redirectTo(string $routeName): void {
+        $this->redirect($this->urlFor($routeName));
     }
 
 
@@ -123,90 +66,17 @@ class Router extends A_WildcardBasedRouteManager{
     /////////////////////////////////////////////////////////////////////////
     //Overrides
     /////////////////////////////////////////////////////////////////////////
-    /**A static method initializing the core wildcards if they are not initialized
-     */
-    public static function initCoreWildcards(): void{
-        if(!self::$isInitialized) {
-            self::$coreWildcards = array_keys(self::$wildcards);
-            self::$isInitialized = true;
-        }
-    }
-
-    /**Registers a wildcard (only if it doesn't exist)
-     * @param string $wildcard being the wildcard identifier/non-compiled regex (eg. "/:wildcard/")
-     * @param string $regex being the compiled regex for the wildcard
-     */
-    public static function registerWildcard(string $wildcard, string $regex): void{
-        if(!array_key_exists($wildcard, self::$wildcards))
-            self::$wildcards[$wildcard] = $regex;
-    }
-
-    /**Removes a (non core) wildcard
-     * @param string $wildcard being the wildcard identifier/non-compiled regex of the wildcard to remove
-     */
-    public static function removeWildcard(string $wildcard): void{
-        if(
-            !array_key_exists($wildcard, self::$coreWildcards)
-            && array_key_exists($wildcard, self::$wildcards)
-        )
-            unset(self::$wildcards[$wildcard]);
-    }
-
-    /**Registers a wildcard as an alias of an already registered wildcard
-     * @param string $alias being the wildcard identifier/non-compiled regex of the new wildcard
-     * @param string $current being the the wildcard identifier/non-compiled regex of the aliased wildcard
-     */
-    public static function registerAliasWildcard(string $alias, string $current): void{
-        if(
-            !array_key_exists($alias, self::$wildcards)
-            && array_key_exists($current, self::$wildcards)
-        )
-            self::registerWildcard($alias, self::$wildcards[$current]);
-    }
-
-    /**Creates a regex from a Route's regex
-     * @param string $uri_regex being the Route's regex
-     * @return string
-     */
-    protected static function makeRegex(string $uri_regex): string{
-        return "/^" . str_replace("/", "\/", self::masksToRegex($uri_regex)) . "$/";
-    }
-
-    /**Converts any non-compiled regex (wildcard) to compiled regex and return the modified string
-     * @param string $uri_regex being the Route's regex
-     * @return string
-     */
-    protected static function masksToRegex(string $uri_regex): string{
-        $re = "{$uri_regex}";
-
-        foreach(self::$wildcards as $pattern=>$replacement) //Replaces all defined wildcards before default wildcard
-            $re = preg_replace($pattern, $replacement, $re);
-
-        return (string)preg_replace("/:(\w+)/i", "([^/]+)", $re);
-    }
-
-    /**Retrieves the array of URI parameters from the URI dans the Route's regex
-     * @param string $uri being the requested URI
-     * @param string $uri_regex being the Route's regex
-     * @return array
-     */
-    protected static function uriParams(string $uri, string $uri_regex): array{
-        $uri_regex = self::masksToRegex($uri_regex);
-        $regex = new RegexHandler(self::makeRegex($uri_regex));
-
-        return $regex->getGroups($uri);
-    }
-
     /**Determines whether or not this Router has a given Route (from a method and a regex)
      * @param string $method
      * @param string $re
      * @return bool
      */
-    protected function hasRoute(string $method, string $re): bool{
+    protected function hasRoute(string $method, string $re): bool {
         $paramRoute = new Route($method, $re);
-        foreach($this->routes as $route){
-            if($route instanceof Route){
-                if($route->equals($paramRoute))
+        $routes = $this->getAllRoutes();
+        foreach ($routes as $route) {
+            if ($route instanceof Route) {
+                if ($route->equals($paramRoute))
                     return true;
             }
         }
@@ -219,11 +89,12 @@ class Router extends A_WildcardBasedRouteManager{
      * @param string $re
      * @return Route|null
      */
-    protected function getRoute(string $method, string $re): ?Route{
+    protected function getRoute(string $method, string $re): ?Route {
         $paramRoute = new Route($method, $re);
-        foreach($this->routes as $route){
-            if($route instanceof Route){
-                if($route->equals($paramRoute))
+        $routes = array_merge($this->routes, $this->getAllTransformedRoutesForMethod($method));
+        foreach ($routes as $route) {
+            if ($route instanceof Route) {
+                if ($route->equals($paramRoute))
                     return $route;
             }
         }
@@ -235,12 +106,13 @@ class Router extends A_WildcardBasedRouteManager{
      * @param string $method being the given method
      * @return Route[]
      */
-    protected function getRoutesForMethod(string $method): array{
-        if(in_array($method, Route::METHODS, true)){
-            return array_filter($this->routes, function(Route $route) use($method){
+    protected function getRoutesForMethod(string $method): array {
+        if (in_array($method, Route::METHODS, true)) {
+            $routes = array_merge($this->routes, $this->getAllTransformedRoutesForMethod($method));
+            return array_filter($routes, function (Route $route) use ($method) {
                 return $route->method() === $method;
             });
-        }else
+        } else
             return [];
     }
 
@@ -248,7 +120,7 @@ class Router extends A_WildcardBasedRouteManager{
      * @param Route $route being the route that is being added to this T_RouteStore
      * @return $this
      */
-    protected function addRoute(Route $route){
+    protected function addRoute(Route $route) {
         $this->routes[] = $route;
         return $this;
     }
@@ -260,17 +132,18 @@ class Router extends A_WildcardBasedRouteManager{
      * @param callable|null $authMiddleware being the Route's middleware
      * @return Route
      */
-    protected function setupRoute(string $method, string $re, callable $functor, ?callable $authMiddleware = null): Route{
-        if($this->hasRoute($method, $re)){
-            $route =  $this->getRoute($method, $re);
-            if(!is_null($route)) {
+    protected function setupRoute(string $method, string $re, callable $functor, ?callable $authMiddleware = null): Route {
+        if ($this->hasRoute($method, $re)) {
+            $route = $this->getRoute($method, $re);
+            if (!is_null($route)) {
                 $route->setHandler($functor);
 
-                if(!is_null($authMiddleware))
+                if (!is_null($authMiddleware))
                     $route->setAuthMiddleware($authMiddleware);
             }
 
             return $route;
+            //throw new Exception("It is impossible to override/declare twice a single Route");
         }
         //otherwise
         //push it to the arrays
@@ -278,7 +151,7 @@ class Router extends A_WildcardBasedRouteManager{
         $this->addRoute($route);
         $route->setHandler($functor);
 
-        if(!is_null($authMiddleware))
+        if (!is_null($authMiddleware))
             $route->setAuthMiddleware($authMiddleware);
 
         return $route;
@@ -289,29 +162,29 @@ class Router extends A_WildcardBasedRouteManager{
      * @param ServerRequestInterface $request
      * @return mixed
      */
-    protected function handleRequest(ServerRequestInterface $request){
+    protected function handleRequest(ServerRequestInterface $request) {
         $method = $request->getMethod();
         $routes = $this->getRoutesForMethod($method);
         $uri = $request->getUri()->getPath();
 
         $trimmed_uri = rtrim($uri, "/"); //Removes the trailing slash if there's one, not if root though
-        if($trimmed_uri == "")//If the trimmed string is empty, it was the root that was requested
+        if ($trimmed_uri == "")//If the trimmed string is empty, it was the root that was requested
             $trimmed_uri = "/"; //Then replace it with the root
 
-        if($uri != $trimmed_uri) //If the trimmed version is different, then permanent redirect
-            $this->redirect($trimmed_uri, 301) and die();
+        if ($uri != $trimmed_uri) //If the trimmed version is different, then permanent redirect
+            $this->redirect($trimmed_uri, HttpRedirectType::PERMANENT()) and die();
 
-        $route = array_reduce($routes, function($acc, Route $route) use($uri){
-            $regex = new RegexHandler( self::makeRegex($route->regex()) );
-            if($regex->appliesTo($uri))
+        $route = array_reduce($routes, function ($acc, Route $route) use ($uri) {
+            $regex = new RegexHandler(self::makeRegex($route->regex()));
+            if ($regex->appliesTo($uri))
                 $acc = $route;
 
             return $acc;
         }, null);
 
-        if(is_null($route))
+        if (is_null($route))
             $route = $this->getRoute("error", "404"); //One must always be defined
-        else if(!call_user_func($route->getAuthMiddleware(), $request))
+        else if (!call_user_func($route->getAuthMiddleware(), $request))
             $route = $this->getRoute("error", "404");
 
 
@@ -326,12 +199,48 @@ class Router extends A_WildcardBasedRouteManager{
 
     /**Runs this Router
      * @param ServerRequestInterface|null $request
+     * @return mixed|void
      */
-    public function run(?ServerRequestInterface $request = null){
-        if(is_null($request))
+    public function run(?ServerRequestInterface $request = null) {
+        if (is_null($request))
             $request = ServerRequest::fromGlobals();
 
         $this->handleRequest($request);
+    }
+
+
+    /**
+     * @param A_CisRouter $subrouter
+     * @return $this
+     */
+    public function register(A_CisRouter $subrouter) {
+        if (!in_array($subrouter, $this->subrouters))
+            $this->subrouters[] = $subrouter;
+        return $this;
+    }
+
+
+    public function getAllTransformedRoutesForMethod(string $method): array {
+        return array_filter($this->getAllTransformedRoutes(), function (Route $route) use ($method) {
+            return $route->method() === $method;
+        });
+    }
+
+    protected function getAllTransformedRoutes(): array {
+        return array_reduce($this->subrouters, function (array $tRoutes, A_CisRouter $subrouter) {
+            return array_merge($tRoutes, array_map(function (Route $route) use ($subrouter) {
+                $r = new Route($route->method(), $subrouter->getPrefix() . rtrim($route->regex(), "/"), $route->getHandler());
+                $r->setAuthMiddleware(function() use($route, $subrouter){
+                    return call_user_func_array($route->getAuthMiddleware(),[])
+                        && call_user_func_array($subrouter->getDefaultAuthMiddleware(), []);
+                });
+                return $r;
+            }, $subrouter->getRoutes()));
+        }, []);
+    }
+
+    protected function getAllRoutes() : array{
+        return array_merge($this->routes, $this->getAllTransformedRoutes());
     }
 }
 
