@@ -10,10 +10,13 @@ namespace WhiteBox\Routing;
 //Imports
 /////////////////////////////////////////////////////////////////////////
 use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use WhiteBox\Helpers\RegexHandler;
 use WhiteBox\Http\HttpRedirectType;
+use WhiteBox\Routing\Abstractions\A_CisRouter;
 use WhiteBox\Routing\Abstractions\T_MetaRouter;
+use WhiteBox\Routing\Abstractions\T_NamedRedirectionManager;
 use WhiteBox\Routing\Abstractions\T_WildcardBasedArrayRouteManager;
 use WhiteBox\Routing\Route;
 
@@ -27,13 +30,16 @@ class Router {
     /////////////////////////////////////////////////////////////////////////
     //Traits used
     /////////////////////////////////////////////////////////////////////////
-    use T_MetaRouter{
-        T_MetaRouter::__construct as protected MetaRouter__construct;
-    }
-
     use T_WildcardBasedArrayRouteManager{
         T_WildcardBasedArrayRouteManager::__construct as protected WBARM__construct;
     }
+
+    use T_MetaRouter{
+        T_MetaRouter::__construct as protected MetaRouter__construct;
+        T_MetaRouter::urlFor insteadof T_WildcardBasedArrayRouteManager;
+    }
+
+    use T_NamedRedirectionManager;
 
 
 
@@ -43,67 +49,6 @@ class Router {
     public function __construct() {
         $this->WBARM__construct();
         $this->MetaRouter__construct();
-    }
-
-
-
-    /////////////////////////////////////////////////////////////////////////
-    //Methods
-    /////////////////////////////////////////////////////////////////////////
-    /**Retrieves the regex/URL associated to the Route that has the given routeName
-     * @param string $routeName being the name of the Route to lookup the url for
-     * @param array|null $uriParams being the URI params to pass to build the url (format being : "/user/:id" would give ["id"=>1]
-     * @return string
-     */
-    public function urlFor(string $routeName, ?array $uriParams = null): string {
-        $name = "{$routeName}";
-
-        foreach ($this->routes as $route) {
-            if ($route->getName() === $name) {
-                if(is_null($uriParams))
-                    return $route->regex();
-                else {
-                    $uriKeys = array_keys($uriParams);
-                    $uriValues = array_values($uriParams);
-                    $uriParameters = array_map(function($key, $value){
-                        return [
-                            "key" => $key,
-                            "value" => $value
-                        ];
-                    }, $uriKeys, $uriValues);
-
-                    return array_reduce($uriParameters, function (string $routeBuilt, array $uriParam): string {
-                        $key = (string)$uriParam["key"];
-                        $value = (string)$uriParam["value"];
-                        return preg_replace("/:{$key}/", $value, $routeBuilt, 1);
-                    }, $route->regex());
-                }
-            }
-        }
-
-        return "";
-    }
-
-    /**Redirects to a given URL
-     * @param string $url being the URL to redirect to
-     * @param HttpRedirectType $status
-     * @return bool
-     */
-    public function redirect(string $url, ?HttpRedirectType $status = null): bool {
-        if (is_null($status))
-            $status = HttpRedirectType::FOUND();
-
-        header("Location: {$url}", true, $status->getCode());
-        return true;
-    }
-
-    /**Redirects to the URL of the Route that has the given routeName
-     * @param string $routeName being the name of the Route to redirect to
-     * @param null|HttpRedirectType $status
-     * @return bool
-     */
-    public function redirectTo(string $routeName, ?HttpRedirectType $status = null): bool {
-        return $this->redirect($this->urlFor($routeName), $status);
     }
 
 
@@ -205,9 +150,10 @@ class Router {
 
     /**Bootstraps this Router to handle requests
      * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
      * @return mixed
      */
-    protected function handleRequest(ServerRequestInterface $request) {
+    protected function handleRequest(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface{
         $method = $request->getMethod();
         $routes = $this->getRoutesForMethod($method);
         $uri = $request->getUri()->getPath();
@@ -217,7 +163,7 @@ class Router {
             $trimmed_uri = "/"; //Then replace it with the root
 
         if ($uri != $trimmed_uri) //If the trimmed version is different, then permanent redirect
-            $this->redirect($trimmed_uri, HttpRedirectType::PERMANENT()) and die();
+            return $this->redirect($trimmed_uri, $response, HttpRedirectType::PERMANENT());
 
         $route = array_reduce($routes, function ($acc, Route $route) use ($uri) {
             $regex = new RegexHandler(self::makeRegex($route->regex()));
@@ -227,27 +173,32 @@ class Router {
             return $acc;
         }, null);
 
-        if (is_null($route))
+        if (is_null($route)){
+            $response = $response->withStatus(404);
             $route = $this->getRoute("error", "404"); //One must always be defined
-        else if (!call_user_func($route->getAuthMiddleware(), $request))
+        }else if (!call_user_func($route->getAuthMiddleware(), $request)) {
+            $response = $response->withStatus(404);
             $route = $this->getRoute("error", "404");
+        }
 
 
         $arguments = self::uriParams($uri, $route->regex());
         $arguments = array_merge($arguments, [
-            $request
+            $request,
+            $response
         ]);
 
 
-        return call_user_func_array($route->getHandler(), $arguments);
+        $response->getBody()->write( call_user_func_array($route->getHandler(), $arguments) );
+        return $response;
     }
 
 
     /**
-     * @param SubRouter $subrouter
+     * @param A_CisRouter $subrouter
      * @return $this
      */
-    public function register(SubRouter $subrouter) {
+    public function register(A_CisRouter $subrouter) {
         if (!in_array($subrouter, $this->subrouters))
             $this->subrouters[] = $subrouter;
         return $this;
@@ -261,7 +212,7 @@ class Router {
     }
 
     protected function getAllTransformedRoutes(): array {
-        return array_reduce($this->subrouters, function (array $tRoutes, SubRouter $subrouter) {
+        return array_reduce($this->subrouters, function (array $tRoutes, A_CisRouter $subrouter) {
             return array_merge($tRoutes, array_map(function (Route $route) use ($subrouter) {
                 $r = new Route($route->method(), $subrouter->getPrefix() . rtrim($route->regex(), "/"), $route->getHandler());
                 $r->setAuthMiddleware(function() use($route, $subrouter){

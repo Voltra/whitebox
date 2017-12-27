@@ -11,8 +11,6 @@ require_once "middlewares/AdminMiddleware.php";
 //Imports
 /////////////////////////////////////////////////////////////////////////
 use WhiteBox\App;
-use WhiteBox\Middlewares\A_Middleware;
-use WhiteBox\Routing\Router;
 use WhiteBox\Http\Session;
 use WhiteBox\Rendering\Renderer;
 use WhiteBox\Rendering\Engine\PhpHtmlRenderEngine;
@@ -36,10 +34,14 @@ Session::start(); //Engages the use of sessions
 Renderer::setBaseLocation(relativeUrl("views/")); //Sets the root location for views
 Renderer::registerRenderEngine(new PhpHtmlRenderEngine()); //Even though this is the default \o/
 
-$app->pipe(new AdminMiddleware());
+$app->pipe(new AdminMiddleware($app));
 
 /////////////////////////////////////////////////////////////////////////
 //File requirements
 /////////////////////////////////////////////////////////////////////////
 /*To setup all of your Route you can use a RouteLoader (will scan recursively the folder), cf. routeLoaderGenerator*/
 require_once "route_autoload.php";
+
+
+$api = new ApiController();
+$app->register($api);

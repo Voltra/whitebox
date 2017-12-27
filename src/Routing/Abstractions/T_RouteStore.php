@@ -47,4 +47,11 @@ trait T_RouteStore{
      * @return $this
      */
     protected abstract function addRoute(Route $route);
+
+    /**Retrieves the regex/URL associated to the Route that has the given routeName
+     * @param string $routeName being the name of the Route to lookup the url for
+     * @param array|null $uriParams being the URI params to pass to build the url (format being : "/user/:id" would give ["id"=>1]
+     * @return string
+     */
+    public abstract function urlFor(string $routeName, ?array $uriParams = null): string;
 }

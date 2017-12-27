@@ -1,21 +1,28 @@
 <?php
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use WhiteBox\App;
 use WhiteBox\Helpers\RegexHandler;
 use WhiteBox\Middlewares\A_Middleware;
 
 class AdminMiddleware extends A_Middleware{
-    public function process(\Psr\Http\Message\ServerRequestInterface $rq, ?A_Middleware $next, \WhiteBox\App $app) {
+    protected $app;
+
+    public function __construct(App $app){
+        $this->app = $app;
+    }
+
+    public function process(ServerRequestInterface $rq, ResponseInterface $res, callable $next): ResponseInterface {
         $uri = $rq->getUri()->getPath();
         $requiresAdmin = new RegexHandler("/^\/admin/");//Uri starts with "/admin"
 
         if($requiresAdmin->appliesTo($uri)){
-            if($this->isAdmin()){
-                if(!is_null($next))
-                    return $next->process($rq, null, $app);
-                return true;
-            }else
-                return $app->redirectTo("home");
+            if(!$this->isAdmin())
+                return $this->app->redirectTo("home", $res);
         }
+
+        return $next($rq, $res);
     }
 
     protected function isAdmin(){

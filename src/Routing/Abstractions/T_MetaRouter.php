@@ -51,10 +51,10 @@ trait T_MetaRouter /*extends T_WildcardBasedArrayRouteManager*/ {
     //Methods
     /////////////////////////////////////////////////////////////////////////
     /**Register a subrouter in this metarouter
-     * @param SubRouter $subrouter being the cisrouter(subrouter) to register in this metarouter
+     * @param A_CisRouter $subrouter being the cisrouter(subrouter) to register in this metarouter
      * @return $this
      */
-    public abstract function register(SubRouter $subrouter);
+    public abstract function register(A_CisRouter $subrouter);
 
     /**
      * @param string $method
@@ -65,4 +65,34 @@ trait T_MetaRouter /*extends T_WildcardBasedArrayRouteManager*/ {
     protected abstract function getAllRoutes() : array;
 
     protected abstract function getAllTransformedRoutes() : array;
+
+
+    public function urlFor(string $routeName, ?array $uriParams = null): string {
+        $name = "{$routeName}";
+
+        foreach ($this->getAllRoutes() as $route) {
+            if ($route->getName() === $name) {
+                if(is_null($uriParams))
+                    return $route->regex();
+                else {
+                    $uriKeys = array_keys($uriParams);
+                    $uriValues = array_values($uriParams);
+                    $uriParameters = array_map(function($key, $value){
+                        return [
+                            "key" => $key,
+                            "value" => $value
+                        ];
+                    }, $uriKeys, $uriValues);
+
+                    return array_reduce($uriParameters, function (string $routeBuilt, array $uriParam): string {
+                        $key = (string)$uriParam["key"];
+                        $value = (string)$uriParam["value"];
+                        return preg_replace("/:{$key}/", $value, $routeBuilt, 1);
+                    }, $route->regex());
+                }
+            }
+        }
+
+        return "";
+    }
 }

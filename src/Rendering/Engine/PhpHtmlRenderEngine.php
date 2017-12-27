@@ -9,6 +9,7 @@ namespace WhiteBox\Rendering\Engine;
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
+use Psr\Http\Message\ResponseInterface;
 use WhiteBox\Helpers\MagicalArray;
 use WhiteBox\Http\Session;
 use WhiteBox\Rendering\I_ViewRenderEngine;
@@ -27,11 +28,12 @@ class PhpHtmlRenderEngine implements I_ViewRenderEngine {
     //Methods
     /////////////////////////////////////////////////////////////////////////
     /** Renders a view to a HTML string from the given URI
+     * @param ResponseInterface $res
      * @param string $uri being the uri to the view file (must be a PHP file)
      * @param array $data being the data that will be passed to the view
      * @return string
      */
-    public function render(string $uri, array $data = []): string{
+    public function render(ResponseInterface $res, string $uri, array $data = []): string{
         Session::set("VIEW_DATA", $data);
         self::beginViewRendering();
         ob_start();

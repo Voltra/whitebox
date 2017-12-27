@@ -71,6 +71,40 @@ trait T_WildcardBasedArrayRouteManager{
     }
 
 
+    /**Retrieves the regex/URL associated to the Route that has the given routeName
+     * @param string $routeName being the name of the Route to lookup the url for
+     * @param array|null $uriParams being the URI params to pass to build the url (format being : "/user/:id" would give ["id"=>1]
+     * @return string
+     */
+    public function urlFor(string $routeName, ?array $uriParams = null): string {
+        $name = "{$routeName}";
+
+        foreach ($this->routes as $route) {
+            if ($route->getName() === $name) {
+                if(is_null($uriParams))
+                    return $route->regex();
+                else {
+                    $uriKeys = array_keys($uriParams);
+                    $uriValues = array_values($uriParams);
+                    $uriParameters = array_map(function($key, $value){
+                        return [
+                            "key" => $key,
+                            "value" => $value
+                        ];
+                    }, $uriKeys, $uriValues);
+
+                    return array_reduce($uriParameters, function (string $routeBuilt, array $uriParam): string {
+                        $key = (string)$uriParam["key"];
+                        $value = (string)$uriParam["value"];
+                        return preg_replace("/:{$key}/", $value, $routeBuilt, 1);
+                    }, $route->regex());
+                }
+            }
+        }
+
+        return "";
+    }
+
 
     /////////////////////////////////////////////////////////////////////////
     //Overrides
@@ -146,6 +180,6 @@ trait T_WildcardBasedArrayRouteManager{
         $uri_regex = self::masksToRegex($uri_regex);
         $regex = new RegexHandler(self::makeRegex($uri_regex));
 
-        return $regex->getGroups($uri);
+        return array_map("urldecode", $regex->getGroups($uri));
     }
 }

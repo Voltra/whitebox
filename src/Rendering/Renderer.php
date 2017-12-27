@@ -11,6 +11,7 @@ namespace WhiteBox\Rendering;
 /////////////////////////////////////////////////////////////////////////
 use Error;
 use PHPUnit\Runner\Exception;
+use Psr\Http\Message\ResponseInterface;
 use WhiteBox\Helpers\TraitChecker;
 use WhiteBox\Rendering\Engine\PhpHtmlRenderEngine;
 use WhiteBox\Http\Session;
@@ -57,16 +58,19 @@ class Renderer{
     }
 
     /**Renders a view file (w/ a render engine if one is registered)
+     * @param ResponseInterface $res
      * @param string $uri - the URI/URL to the view file to render
      * @param array $data - the data to send to the view (if there's a render engine in use)
+     * @return string
+     * @throws Error
      */
-    public static function render(string $uri, array $data=[]){
+    public static function render(ResponseInterface $res, string $uri, array $data=[]){
         $URI = self::$baseLocation . $uri;
 
         if(!self::hasRenderEngine())
             self::registerRenderEngine(new PhpHtmlRenderEngine());
 
-        echo self::renderViaEngine($URI, $data);
+        return self::renderViaEngine($res, $URI, $data);
     }
 
     /**Clears the output/rendering buffer
@@ -76,22 +80,26 @@ class Renderer{
     }
 
     /**Clears the output/rendering buffer and renders the view
+     * @param ResponseInterface $res
      * @param string $uri - the URI/URl to the view file to render
      * @param array $data - the data passed to the vie
+     * @return string
+     * @throws Error
      */
-    public static function renderView(string $uri, array $data=[]): void{
+    public static function renderView(ResponseInterface $res, string $uri, array $data=[]): string{
         self::clear();
-        self::render($uri, $data);
+        return self::render($res, $uri, $data);
     }
 
     /**Renders a view via the registered render engine (only if the render engine is valid)
+     * @param ResponseInterface $res
      * @param string $uri - the URI/URL to the view file to render
      * @param array $data - the data passed to the view
      * @return string
      */
-    protected static function renderViaEngine(string $uri, array $data=[]): string{
+    protected static function renderViaEngine(ResponseInterface $res, string $uri, array $data=[]): string{
         if(self::hasValidRenderEngine())
-            return self::$engine->render($uri, $data);
+            return self::$engine->render($res, $uri, $data);
         else
             throw new Exception("The registered view render engine is invalid.");
     }

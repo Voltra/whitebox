@@ -16,7 +16,7 @@ use WhiteBox\Routing\Abstractions\T_WildcardBasedRouteManager;
  * Trait T_CisRouter
  * @package WhiteBox\Routing\Abstractions
  */
-trait T_CisRouter{
+abstract class A_CisRouter{
     /////////////////////////////////////////////////////////////////////////
     //Traits used
     /////////////////////////////////////////////////////////////////////////

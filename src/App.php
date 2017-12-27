@@ -9,11 +9,14 @@ namespace WhiteBox;
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
 use WhiteBox\Http\HttpRedirectType;
 use WhiteBox\Middlewares\T_MiddlewareHub;
+use WhiteBox\Routing\Abstractions\A_CisRouter;
 use WhiteBox\Routing\Abstractions\T_MetaRouter;
+use WhiteBox\Routing\Abstractions\T_NamedRedirectionManager;
 use WhiteBox\Routing\Abstractions\T_RouteBuilder;
 use WhiteBox\Routing\Route;
 use WhiteBox\Routing\Router;
@@ -31,6 +34,7 @@ class App{
     use T_MiddlewareHub{
         T_MiddlewareHub::__construct as protected MiddlewareHub__construct;
     }
+    use T_NamedRedirectionManager;
 
 
     public function __construct() {
@@ -48,12 +52,12 @@ class App{
     protected $router;
 
 
-    public function redirect(string $url, ?HttpRedirectType $status = null) : bool{
-        return $this->router->redirect($url, $status);
+    public function redirect(string $url, ResponseInterface $res, ?HttpRedirectType $status = null) : ResponseInterface{
+        return $this->router->redirect($url, $res, $status);
     }
 
-    public function redirectTo(string $routeName, ?HttpRedirectType $status = null) : bool{
-        return $this->router->redirectTo($routeName);
+    public function redirectTo(string $routeName, ResponseInterface $res, ?HttpRedirectType $status = null) : ResponseInterface{
+        return $this->router->redirectTo($routeName, $res, $status);
     }
 
     public function urlFor(string $routeName, ?array $uriParams=null) : string{
@@ -65,10 +69,10 @@ class App{
     //Overrides
     /////////////////////////////////////////////////////////////////////////
     /**Register a subrouter in this metarouter
-     * @param SubRouter $subrouter being the cisrouter(subrouter) to register in this metarouter
+     * @param A_CisRouter $subrouter being the cisrouter(subrouter) to register in this metarouter
      * @return $this
      */
-    public function register(SubRouter $subrouter) {
+    public function register(A_CisRouter $subrouter) {
         $this->router->register($subrouter);
         return $this;
     }
@@ -112,11 +116,18 @@ class App{
 
     /**The protected way to handle a request
      * @param ServerRequestInterface $request being the request to handle
+     * @param ResponseInterface $response
      * @return mixed
      */
-    protected function handleRequest(ServerRequestInterface $request) {
-        $this->process($request, $this);
-        return $this->router->run($request);
+    protected function handleRequest(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface{
+        $handleRequest = (new ReflectionClass(Router::class))
+            ->getMethod("handleRequest");
+
+        $handleRequest->setAccessible(true);
+        $ret = $handleRequest->invokeArgs($this->router, [$request, $this->process($request, $response)]);
+        $handleRequest->setAccessible(false);
+
+        return $ret;
     }
 
     /**Sets up a Route in this T_RouteBuilder
@@ -133,6 +144,68 @@ class App{
         $setupRoute->setAccessible(true);
         $ret = $setupRoute->invokeArgs($this->router, [$method, $re, $functor, $authMiddleware]);
         $setupRoute->setAccessible(false);
+
+        return $ret;
+    }
+
+    /**Determines whether or not this T_RouteStores has a given Route (from a method and a regex)
+     * @param string $method being the method to check
+     * @param string $re being the Regex to check
+     * @return bool
+     */
+    protected function hasRoute(string $method, string $re): bool {
+        $hasRoute = (new ReflectionClass(Router::class))
+            ->getMethod("hasRoute");
+
+        $hasRoute->setAccessible(true);
+        $ret = $hasRoute->invokeArgs($this->router, [$method, $re]);
+        $hasRoute->setAccessible(false);
+
+        return $ret;
+    }
+
+    /**Retrieves a Route in this T_RouteStore from a method and a regex
+     * @param string $method being the method of the Route to retrieve
+     * @param string $re being the Regex of the Route to retrieve
+     * @return Route|null
+     */
+    protected function getRoute(string $method, string $re): ?Route {
+        $getRoute = (new ReflectionClass(Router::class))
+            ->getMethod("getRoute");
+
+        $getRoute->setAccessible(true);
+        $ret = $getRoute->invokeArgs($this->router, [$method, $re]);
+        $getRoute->setAccessible(false);
+
+        return $ret;
+    }
+
+    /**Retrieves the array of Route which method's is the given method
+     * @param string $method being the given method
+     * @return Route[]
+     */
+    protected function getRoutesForMethod(string $method): array {
+        $getRoutesForMethod = (new ReflectionClass(Router::class))
+            ->getMethod("getRoutesForMethod");
+
+        $getRoutesForMethod->setAccessible(true);
+        $ret = $getRoutesForMethod->invoke($this->router, $method);
+        $getRoutesForMethod->setAccessible(false);
+
+        return $ret;
+    }
+
+    /**Adds a Route to this T_RouteStore
+     * @param Route $route being the route that is being added to this T_RouteStore
+     * @return $this
+     */
+    protected function addRoute(Route $route) {
+        $addRoute = (new ReflectionClass(Router::class))
+            ->getMethod("addRoute");
+
+        $addRoute->setAccessible(true);
+        $ret = $addRoute->invoke($this->router, $route);
+        $addRoute->setAccessible(false);
 
         return $ret;
     }

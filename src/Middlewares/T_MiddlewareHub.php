@@ -2,6 +2,7 @@
 namespace WhiteBox\Middlewares;
 
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use WhiteBox\App;
 
@@ -11,8 +12,14 @@ trait T_MiddlewareHub {
      */
     protected $middlewares;
 
+    /**
+     * @var int
+     */
+    protected $index;
+
     public function __construct(){
         $this->middlewares = [];
+        $this->index = 0;
     }
 
     protected function has(A_Middleware $middleware) : bool{
@@ -31,16 +38,20 @@ trait T_MiddlewareHub {
         return $this;
     }
 
-    public function process(ServerRequestInterface $rq, App $app){
-        function hasNext(array $arr) : bool{
-            return next($arr) !== false;
-        }
+    protected function getCurrent(): ?A_Middleware{
+        if(isset($this->middlewares[$this->index]))
+            return $this->middlewares[$this->index];
 
-        function getNext(array $arr){
-            return hasNext($arr) ? next($arr) : null;
-        }
+        return null;
+    }
 
-        foreach($this->middlewares as $middleware)
-            $middleware->process($rq, getNext($this->middlewares), $app);
+    public function process(ServerRequestInterface $rq, ResponseInterface $res): ResponseInterface{
+        $current = $this->getCurrent();
+        $this->index += 1;
+
+        if(is_null($current))
+            return $res;
+        else
+            return $current->process($rq, $res, [$this, "process"]);
     }
 }

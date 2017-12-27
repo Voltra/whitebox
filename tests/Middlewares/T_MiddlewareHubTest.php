@@ -89,20 +89,20 @@ class T_MiddlewareHubTest extends PHPUnit{
 
 class MiddlewareA extends A_Middleware{
 
-    public function process(ServerRequestInterface $rq, ?A_Middleware $next, App $app) {
+    public function process(ServerRequestInterface $rq, ?A_Middleware $next) {
         return $this;
     }
 }
 
 class MiddlewareB extends A_Middleware{
 
-    public function process(ServerRequestInterface $rq, ?A_Middleware $next, App $app) {
+    public function process(ServerRequestInterface $rq, ?A_Middleware $next) {
         return $this;
     }
 }
 
 class MiddlewareC extends MiddlewareB{
-    public function process(ServerRequestInterface $rq, ?A_Middleware $next, App $app) {
+    public function process(ServerRequestInterface $rq, ?A_Middleware $next) {
         return $this;
     }
 }
