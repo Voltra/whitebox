@@ -9,6 +9,8 @@ namespace WhiteBox;
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
+use Doctrine\Common\Annotations\AnnotationException;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
@@ -18,9 +20,11 @@ use WhiteBox\Routing\Abstractions\A_CisRouter;
 use WhiteBox\Routing\Abstractions\T_MetaRouter;
 use WhiteBox\Routing\Abstractions\T_NamedRedirectionManager;
 use WhiteBox\Routing\Abstractions\T_RouteBuilder;
+use WhiteBox\Routing\Abstractions\T_WildcardBasedRouteSystem;
+use WhiteBox\Routing\Controllers\Routing;
+use WhiteBox\Routing\Controllers\SubRouting;
 use WhiteBox\Routing\Route;
 use WhiteBox\Routing\Router;
-use WhiteBox\Routing\SubRouter;
 
 
 class App{
@@ -35,12 +39,18 @@ class App{
         T_MiddlewareHub::__construct as protected MiddlewareHub__construct;
     }
     use T_NamedRedirectionManager;
+    use T_WildcardBasedRouteSystem;
 
 
+    /**
+     * App constructor.
+     * @throws AnnotationException
+     */
     public function __construct() {
         $this->MetaRouter__construct();
         $this->MiddlewareHub__construct();
         $this->router = new Router();
+        $this->bootstrapAnnotations();
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -51,6 +61,21 @@ class App{
      */
     protected $router;
 
+
+    /**
+     * @throws AnnotationException
+     */
+    protected function bootstrapAnnotations(){
+        AnnotationRegistry::registerLoader("class_exists");//TODO: Watch for deprectation
+
+        if(!AnnotationRegistry::loadAnnotationClass(Routing::class)):
+            throw new AnnotationException("Couldn't load annotation from: " . Routing::class);
+        endif;
+
+        if(!AnnotationRegistry::loadAnnotationClass(SubRouting::class)):
+            throw new AnnotationException("Couldn't load annotation from " . SubRouting::class);
+        endif;
+    }
 
     public function redirect(string $url, ResponseInterface $res, ?HttpRedirectType $status = null) : ResponseInterface{
         return $this->router->redirect($url, $res, $status);
@@ -208,5 +233,34 @@ class App{
         $addRoute->setAccessible(false);
 
         return $ret;
+    }
+
+    /**A static method initializing the core wildcards if they are not initialized
+     */
+    static function initCoreWildcards(): void {
+        Router::initCoreWildcards();
+    }
+
+    /**Registers a wildcard (only if it doesn't exist)
+     * @param string $wildcard being the wildcard identifier/non-compiled regex (eg. "/:wildcard/")
+     * @param string $regex being the compiled regex for the wildcard
+     */
+    static function registerWildcard(string $wildcard, string $regex): void {
+        Router::registerWildcard($wildcard, $regex);
+    }
+
+    /**Removes a (non core) wildcard
+     * @param string $wildcard being the wildcard identifier/non-compiled regex of the wildcard to remove
+     */
+    static function removeWildcard(string $wildcard): void {
+        Router::removeWildcard($wildcard);
+    }
+
+    /**Registers a wildcard as an alias of an already registered wildcard
+     * @param string $alias being the wildcard identifier/non-compiled regex of the new wildcard
+     * @param string $current being the the wildcard identifier/non-compiled regex of the aliased wildcard
+     */
+    static function registerAliasWildcard(string $alias, string $current) {
+        Router::registerAliasWildcard($alias, $current);
     }
 }

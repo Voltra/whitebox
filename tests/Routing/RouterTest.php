@@ -1,6 +1,7 @@
 <?php
 namespace Test\Routing;
 
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
 use phpmock\MockBuilder;
 use PHPUnit\Framework\TestCase as PHPUnit;
@@ -106,24 +107,13 @@ class RouterTest extends PHPUnit{
      * @covers Router::redirect
      */
     public function redirectRedirects(){
-        $mock = self::mock(
-            "header",
-            function(string $str){
-                //return "{$str}";
-                self::$location = $str;
-            },
-            self::$NAMESPACE
-        );
-
-        $mock->enable();
         $app = new Router();
-        $app->redirect("/");
-        self::assertEquals(
-            "Location: /",
-            self::$location,
+        $res = $app->redirect("/", new Response());
+        self::assertContains(
+            "/",
+            $res->getHeader("Location"),
             "The redirection fails : wrong url assigned"
         );
-        $mock->disable();
     }
 
     /**
@@ -133,27 +123,15 @@ class RouterTest extends PHPUnit{
      * @covers Router::redirectTo
      */
     public function redirectsToWorksProperly(){
-        $mock = self::mock(
-            "header",
-            function(string $str){
-                //return "{$str}";
-                self::$location = $str;
-            },
-            self::$NAMESPACE
-        );
-        $mock->enable();
-
         $app = new Router();
         $app->get("/", function(){})->name("unit.test");
 
-        $app->redirectTo("unit.test");
-        self::assertEquals(
-            "Location: /",
-            self::$location,
+        $res = $app->redirectTo("unit.test", new Response());
+        self::assertContains(
+            "/",
+            $res->getHeader("Location"),
             "Something wrong happens while redirecting from a route's name"
         );
-
-        $mock->disable();
     }
 
     /**
@@ -372,7 +350,7 @@ class RouterTest extends PHPUnit{
             return $errMsg;
         });
 
-        self::assertEquals($errMsg, $handleRequest->invoke($app, new FakeRequest()));
+        self::assertStringStartsWith($errMsg, $handleRequest->invoke($app, new FakeRequest(), new Response())->getBody()->__toString());
     }
 }
 

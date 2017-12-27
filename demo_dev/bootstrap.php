@@ -6,10 +6,10 @@ require_once "../vendor/autoload.php"; //Require Composer's autoloader
 require_once "middlewares/AdminMiddleware.php";
 
 
-
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use WhiteBox\App;
 use WhiteBox\Http\Session;
 use WhiteBox\Rendering\Renderer;

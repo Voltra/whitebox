@@ -1,6 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase as PHPUnit;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use WhiteBox\App;
 use WhiteBox\Middlewares\A_Middleware;
@@ -41,8 +42,8 @@ class T_MiddlewareHubTest extends PHPUnit{
      */
     public function canAddMiddlewareIfNone(){
         $this->hub->pipe(new class extends A_Middleware{
-            public function process(ServerRequestInterface $rq, ?A_Middleware $next, App $app) {
-                return "true";
+            public function process(ServerRequestInterface $rq, ResponseInterface $res, callable $next): ResponseInterface {
+                return $res;
             }
         });
 
@@ -89,20 +90,20 @@ class T_MiddlewareHubTest extends PHPUnit{
 
 class MiddlewareA extends A_Middleware{
 
-    public function process(ServerRequestInterface $rq, ?A_Middleware $next) {
-        return $this;
+    public function process(ServerRequestInterface $rq, ResponseInterface $res, callable $next): ResponseInterface {
+        return $res;
     }
 }
 
 class MiddlewareB extends A_Middleware{
 
-    public function process(ServerRequestInterface $rq, ?A_Middleware $next) {
-        return $this;
+    public function process(ServerRequestInterface $rq, ResponseInterface $res, callable $next): ResponseInterface {
+        return $res;
     }
 }
 
 class MiddlewareC extends MiddlewareB{
-    public function process(ServerRequestInterface $rq, ?A_Middleware $next) {
-        return $this;
+    public function process(ServerRequestInterface $rq, ResponseInterface $res, callable $next): ResponseInterface {
+        return $res;
     }
 }
