@@ -19,5 +19,9 @@
         <testsuite name="Routing">
             <directory>tests/Routing</directory>
         </testsuite>
+
+        <testsuite name="Middlewares">
+            <directory>tests/Middlewares</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

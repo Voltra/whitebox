@@ -10,6 +10,7 @@
             <?= $vd("admin"); ?><br/>
             <br/>
             made with PHP#<code><?= $vd("phpversion"); ?></code>
-        </p>
+        </p><br/>
+        <br/>
     </body>
 </html>

@@ -9,6 +9,7 @@ namespace WhiteBox\Routing\Abstractions;
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
+use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 
 
@@ -27,5 +28,10 @@ trait T_RouteDispatcher{
      * @param null|ServerRequestInterface $request being the request to handle
      * @return mixed
      */
-    protected abstract function run(?ServerRequestInterface $request = null);
+    public function run(?ServerRequestInterface $request = null){
+        if(is_null($request))
+            $request = ServerRequest::fromGlobals();
+
+        return $this->handleRequest($request);
+    }
 }

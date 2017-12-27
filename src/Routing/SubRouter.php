@@ -2,9 +2,10 @@
 namespace WhiteBox\Routing;
 
 
-use WhiteBox\Routing\Abstractions\A_CisRouter;
+use WhiteBox\Routing\Abstractions\T_CisRouter;
 
-class SubRouter extends A_CisRouter {
+class SubRouter{
+    use T_CisRouter;
 
     /**Sets up a Route in this T_RouteBuilder
      * @param string $method being the Route's method

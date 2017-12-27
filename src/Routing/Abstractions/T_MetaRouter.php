@@ -9,16 +9,17 @@ namespace WhiteBox\Routing\Abstractions;
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
-use WhiteBox\Routing\Abstractions\A_WildcardBasedRouteManager;
+use WhiteBox\Routing\Abstractions\T_WildcardBasedRouteManager;
 use WhiteBox\Routing\Abstractions\T_RouteDispatcher;
 use WhiteBox\Routing\Route;
+use WhiteBox\Routing\SubRouter;
 
 
 /**An abstract class representing a router that can attach cisrouters (subrouters) to it
- * Class A_MetaRouter
+ * Class T_MetaRouter
  * @package WhiteBox\Routing\Abstractions
  */
-abstract class A_MetaRouter extends A_WildcardBasedArrayRouteManager {
+trait T_MetaRouter /*extends T_WildcardBasedArrayRouteManager*/ {
     /////////////////////////////////////////////////////////////////////////
     //Traits used
     /////////////////////////////////////////////////////////////////////////
@@ -30,7 +31,7 @@ abstract class A_MetaRouter extends A_WildcardBasedArrayRouteManager {
     //Properties
     /////////////////////////////////////////////////////////////////////////
     /**
-     * @var A_CisRouter[]
+     * @var T_CisRouter[]
      */
     protected $subrouters;
 
@@ -40,7 +41,7 @@ abstract class A_MetaRouter extends A_WildcardBasedArrayRouteManager {
     //Magics
     /////////////////////////////////////////////////////////////////////////
     public function __construct() {
-        parent::__construct();
+        //parent::__construct();
         $this->subrouters = [];
     }
 
@@ -50,10 +51,10 @@ abstract class A_MetaRouter extends A_WildcardBasedArrayRouteManager {
     //Methods
     /////////////////////////////////////////////////////////////////////////
     /**Register a subrouter in this metarouter
-     * @param A_CisRouter $subrouter being the cisrouter(subrouter) to register in this metarouter
+     * @param SubRouter $subrouter being the cisrouter(subrouter) to register in this metarouter
      * @return $this
      */
-    public abstract function register(A_CisRouter $subrouter);
+    public abstract function register(SubRouter $subrouter);
 
     /**
      * @param string $method

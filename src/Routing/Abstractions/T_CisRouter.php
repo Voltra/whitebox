@@ -9,14 +9,21 @@ namespace WhiteBox\Routing\Abstractions;
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
-use WhiteBox\Routing\Abstractions\A_WildcardBasedRouteManager;
+use WhiteBox\Routing\Abstractions\T_WildcardBasedRouteManager;
 
 
 /**
- * Class A_CisRouter
+ * Trait T_CisRouter
  * @package WhiteBox\Routing\Abstractions
  */
-abstract class A_CisRouter extends A_WildcardBasedArrayRouteManager{
+trait T_CisRouter{
+    /////////////////////////////////////////////////////////////////////////
+    //Traits used
+    /////////////////////////////////////////////////////////////////////////
+    use T_WildcardBasedArrayRouteManager{
+        T_WildcardBasedArrayRouteManager::__construct as protected WBARM__construct;
+    }
+
     /**
      * @var string
      */
@@ -28,12 +35,12 @@ abstract class A_CisRouter extends A_WildcardBasedArrayRouteManager{
     protected $defaultAuthMW;
 
     /**
-     * A_CisRouter constructor.
+     * T_CisRouter constructor.
      * @param string $prefix
      * @param callable|null $defaultAuthMW
      */
     public function __construct(string $prefix, ?callable $defaultAuthMW = null) {
-        parent::__construct();
+        $this->WBARM__construct();
         $this->routes = [];
         $this->prefix = $prefix;
         $this->defaultAuthMW = is_null($defaultAuthMW) ? function(){ return true; } : $defaultAuthMW;

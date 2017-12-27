@@ -71,8 +71,8 @@ class Session implements I_Session{
      */
     public static function get(string $key, $default=null){
         self::ensureStarted();
-        if(array_key_exists($key, $_SESSION))
-            return $_SESSION[$key];
+        if(self::has($key))
+            return unserialize($_SESSION[$key]);
         else
             return $default;
     }
@@ -83,7 +83,7 @@ class Session implements I_Session{
      */
     public static function set(string $key, $value): void{
         self::ensureStarted();
-        $_SESSION[$key] = $value;
+        $_SESSION[$key] = serialize($value);
     }
 
     /**Removes an information from the session
@@ -92,5 +92,13 @@ class Session implements I_Session{
     public static function delete(string $key): void{
         self::ensureStarted();
         unset($_SESSION[$key]);
+    }
+
+    /**Determines whether or not the session contains an information
+     * @param string $key being the key to the desired data
+     * @return bool
+     */
+    public static function has(string $key): bool{
+        return array_key_exists($key, $_SESSION);
     }
 }

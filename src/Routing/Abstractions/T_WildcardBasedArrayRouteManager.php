@@ -13,10 +13,14 @@ use WhiteBox\Helpers\RegexHandler;
 use WhiteBox\Routing\Route;
 
 /**
- * Class A_WildcardBasedArrayRouteManager
+ * Trait T_WildcardBasedArrayRouteManager
  * @package WhiteBox\Routing\Abstractions
  */
-abstract class A_WildcardBasedArrayRouteManager extends A_WildcardBasedRouteManager{
+trait T_WildcardBasedArrayRouteManager{
+    use T_WildcardBasedRouteManager;
+
+
+
     /////////////////////////////////////////////////////////////////////////
     //Properties
     /////////////////////////////////////////////////////////////////////////
@@ -133,7 +137,7 @@ abstract class A_WildcardBasedArrayRouteManager extends A_WildcardBasedRouteMana
         return (string)preg_replace("/:(\w+)/i", "([^/]+)", $re);
     }
 
-    /**Retrieves the array of URI parameters from the URI dans the Route's regex
+    /**Retrieves the array of URI parameters from the URI and the Route's regex
      * @param string $uri being the requested URI
      * @param string $uri_regex being the Route's regex
      * @return array

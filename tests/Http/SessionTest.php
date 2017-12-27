@@ -289,7 +289,7 @@ class SessionTest extends PHPUnit{
         Session::start();
         $key = "key";
         $value = "value";
-        $_SESSION[$key] = $value;
+        $_SESSION[$key] = serialize($value);
 
         self::assertEquals(
             $value,

@@ -3,12 +3,15 @@
 //File requirements
 /////////////////////////////////////////////////////////////////////////
 require_once "../vendor/autoload.php"; //Require Composer's autoloader
+require_once "middlewares/AdminMiddleware.php";
 
 
 
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
+use WhiteBox\App;
+use WhiteBox\Middlewares\A_Middleware;
 use WhiteBox\Routing\Router;
 use WhiteBox\Http\Session;
 use WhiteBox\Rendering\Renderer;
@@ -26,14 +29,14 @@ function bootstrap_isAdmin(){
     };
 }
 
-$app = new Router(); //Creates the application/router
-$admin = new SubRouter("/admin", bootstrap_isAdmin()); //Creates a subrouter for the admin zone, gives a default authorisation middleware
+$app = new App(); //Creates the application/router
+$admin = new SubRouter("/admin"/*, bootstrap_isAdmin()*/); //Creates a subrouter for the admin zone, gives a default authorisation middleware
 $app->register($admin);//Registers the subrouter in the router
 Session::start(); //Engages the use of sessions
 Renderer::setBaseLocation(relativeUrl("views/")); //Sets the root location for views
 Renderer::registerRenderEngine(new PhpHtmlRenderEngine()); //Even though this is the default \o/
 
-
+$app->pipe(new AdminMiddleware());
 
 /////////////////////////////////////////////////////////////////////////
 //File requirements

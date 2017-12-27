@@ -17,5 +17,9 @@
                 <?php endfor; ?>
             </ul>
         </p>
+
+        <!--<p>
+            Request: <?= $vd("request"); ?>
+        </p>-->
     </body>
 </html>

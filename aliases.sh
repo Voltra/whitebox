@@ -20,5 +20,6 @@ popd  > /dev/null
 
 ##Aliases definition
 alias phpunit='${BASEDIR}/vendor/phpunit/phpunit/phpunit'
+alias punit='${BASEDIR}/vendor/phpunit/phpunit/phpunit --testdox'
 alias dumpRouteLoader='pushd . > /dev/null && cd ${BASEDIR}/demo_dev && ./dumpRouteLoader.sh && popd > /dev/null'
 

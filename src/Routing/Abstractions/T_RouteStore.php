@@ -22,15 +22,15 @@ trait T_RouteStore{
     //Methods
     /////////////////////////////////////////////////////////////////////////
     /**Determines whether or not this T_RouteStores has a given Route (from a method and a regex)
-     * @param string $method
-     * @param string $re
+     * @param string $method being the method to check
+     * @param string $re being the Regex to check
      * @return bool
      */
     protected abstract function hasRoute(string $method, string $re): bool;
 
     /**Retrieves a Route in this T_RouteStore from a method and a regex
-     * @param string $method
-     * @param string $re
+     * @param string $method being the method of the Route to retrieve
+     * @param string $re being the Regex of the Route to retrieve
      * @return Route|null
      */
     protected abstract function getRoute(string $method, string $re): ?Route;

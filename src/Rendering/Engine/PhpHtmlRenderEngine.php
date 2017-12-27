@@ -12,7 +12,7 @@ namespace WhiteBox\Rendering\Engine;
 use WhiteBox\Helpers\MagicalArray;
 use WhiteBox\Http\Session;
 use WhiteBox\Rendering\I_ViewRenderEngine;
-
+use WhiteBox\Routing\Router;
 
 
 $vd = new MagicalArray(); //View's data
@@ -48,7 +48,7 @@ class PhpHtmlRenderEngine implements I_ViewRenderEngine {
     /////////////////////////////////////////////////////////////////////////
     /**A static method that setup the view rendering
      */
-    public static function beginViewRendering(): void{
+    protected static function beginViewRendering(): void{
         if(Session::isStarted() && !is_null(Session::get("VIEW_DATA")))
             self::setViewData( Session::get("VIEW_DATA") );
         else
@@ -57,7 +57,7 @@ class PhpHtmlRenderEngine implements I_ViewRenderEngine {
 
     /**A static method that resets the engine after rendering
      */
-    public static function endViewRendering(): void{
+    protected static function endViewRendering(): void{
         if(Session::isStarted()) {
             self::resetViewData();
             Session::set("VIEW_DATA", []);
@@ -66,15 +66,28 @@ class PhpHtmlRenderEngine implements I_ViewRenderEngine {
 
     /**A helper method to reset the view's data global variable
      */
-    public static function resetViewData(): void{
+    protected static function resetViewData(): void{
         self::setViewData([]);
     }
 
     /**A helper method to set the view's data global variable
      * @param array $data being an associative array containing all of the view's new data
      */
-    public static function setViewData(array $data): void{
+    protected static function setViewData(array $data): void{
         global $vd;
         $vd = new MagicalArray($data);
+    }
+
+
+    protected $router;
+    public function __construct(?Router $router=null) {
+        $this->router = $router;
+    }
+
+    public function urlFor(string $routeName, ?array $uriParams=null): string{
+        if(is_null($this->router))
+            return "/";
+        else
+            return $this->router->urlFor($routeName, $uriParams);
     }
 }

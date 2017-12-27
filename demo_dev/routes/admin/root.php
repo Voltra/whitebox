@@ -29,10 +29,4 @@ $admin->get("/", function(){
         "admin" => "OMAGAD YOU AN ADMIN?",
         "phpversion" => phpversion()
     ]);
-}/*, isAdmin() genFalseGenerator()*/);
-
-$admin->get("/dashboard", function(){
-    Renderer::renderView("admin/dashboard.php", [
-        "phpversion" => phpversion()
-    ]);
 });
