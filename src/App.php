@@ -21,8 +21,10 @@ use WhiteBox\Routing\Abstractions\T_MetaRouter;
 use WhiteBox\Routing\Abstractions\T_NamedRedirectionManager;
 use WhiteBox\Routing\Abstractions\T_RouteBuilder;
 use WhiteBox\Routing\Abstractions\T_WildcardBasedRouteSystem;
-use WhiteBox\Routing\Controllers\Routing;
-use WhiteBox\Routing\Controllers\SubRouting;
+use WhiteBox\Routing\Controllers\Annotations\DefineRoute;
+use WhiteBox\Routing\Controllers\Annotations\DefineSubRouter;
+use WhiteBox\Routing\Controllers\Annotations\Get;
+use WhiteBox\Routing\Controllers\Annotations\Post;
 use WhiteBox\Routing\Route;
 use WhiteBox\Routing\Router;
 
@@ -62,19 +64,20 @@ class App{
     protected $router;
 
 
-    /**
-     * @throws AnnotationException
-     */
     protected function bootstrapAnnotations(){
         AnnotationRegistry::registerLoader("class_exists");//TODO: Watch for deprectation
 
-        if(!AnnotationRegistry::loadAnnotationClass(Routing::class)):
-            throw new AnnotationException("Couldn't load annotation from: " . Routing::class);
-        endif;
+        $annotationClasses = [
+            DefineRoute::class,
+            DefineSubRouter::class,
+            Get::class,
+            Post::class
+        ];
 
-        if(!AnnotationRegistry::loadAnnotationClass(SubRouting::class)):
-            throw new AnnotationException("Couldn't load annotation from " . SubRouting::class);
-        endif;
+        array_walk($annotationClasses, function(string $annotationClass){
+            if(!AnnotationRegistry::loadAnnotationClass($annotationClass))
+                throw new AnnotationException("Couldn't load annotation from: {$annotationClass}");
+        });
     }
 
     public function redirect(string $url, ResponseInterface $res, ?HttpRedirectType $status = null) : ResponseInterface{

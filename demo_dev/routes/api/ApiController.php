@@ -4,12 +4,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use WhiteBox\Rendering\Renderer;
 use WhiteBox\Routing\Controllers\A_ControllerSubRouter;
-use WhiteBox\Routing\Controllers\Routing;
-use WhiteBox\Routing\Controllers\SubRouting;
+use WhiteBox\Routing\Controllers\Annotations\DefineRoute;
+use WhiteBox\Routing\Controllers\Annotations\DefineSubRouter;
+use WhiteBox\Routing\Controllers\Annotations\Get;
 
 /**
  * Class ApiController
- * @SubRouting(prefix="/api")
+ * @DefineSubRouter(prefix="/api")
  */
 class ApiController extends A_ControllerSubRouter{
     /**
@@ -18,8 +19,8 @@ class ApiController extends A_ControllerSubRouter{
      * @param ResponseInterface $res
      * @return string
      * @throws Error
-     * 
-     * @Routing(method="GET", uri="/grab/:id", name="api.get")
+     *
+     * @Get(uri="/grab/:id", name="api.get")
      */
     public function grab(string $id, ServerRequestInterface $rq, ResponseInterface $res){
         return Renderer::renderView($res, "api/grab.php", [
@@ -35,7 +36,7 @@ class ApiController extends A_ControllerSubRouter{
      * @return mixed
      * @throws Error
      *
-     * @Routing(method="GET", uri="/test", name="api.test")
+     * @DefineRoute(method="GET", uri="/test", name="api.test")
      */
     public function test(ServerRequestInterface $rq, ResponseInterface $res){
         return Renderer::render($res, "api/test.php", [

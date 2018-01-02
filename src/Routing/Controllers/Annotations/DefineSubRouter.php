@@ -1,10 +1,9 @@
 <?php
-namespace WhiteBox\Routing\Controllers;
+namespace WhiteBox\Routing\Controllers\Annotations;
+
 use Doctrine\Common\Annotations\Annotation;
 use Doctrine\Common\Annotations\Annotation\Required;
 use Doctrine\Common\Annotations\Annotation\Target;
-use Doctrine\Common\Annotations\AnnotationException;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
  * Class SubRouting
@@ -12,7 +11,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
  * @Annotation
  * @Target("CLASS")
  */
-class SubRouting extends Annotation{
+class DefineSubRouter extends Annotation{
     /**
      * @var string
      * @Required

@@ -1,11 +1,10 @@
 <?php
-namespace WhiteBox\Routing\Controllers;
+namespace WhiteBox\Routing\Controllers\Annotations;
+
 use Doctrine\Common\Annotations\Annotation;
 use Doctrine\Common\Annotations\Annotation\Required;
 use Doctrine\Common\Annotations\Annotation\Target;
 use Doctrine\Common\Annotations\AnnotationException;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use PHPUnit\Runner\Exception;
 
 /**
  * Class Routing
@@ -13,7 +12,7 @@ use PHPUnit\Runner\Exception;
  * @Annotation
  * @Target("METHOD")
  */
-class Routing{
+class DefineRoute{
     /**
      * @var string
      * @Required
@@ -31,9 +30,19 @@ class Routing{
      */
     public $name;
 
+    /**
+     * DefineRoute constructor.
+     * @param array $values
+     */
     public function __construct(array $values) {
+        $requiredKeys = ["method", "uri"];
+        array_walk($requiredKeys, function(string $requiredKey) use($values){
+            if(!array_key_exists($requiredKey, $values))
+                throw new AnnotationException("Tried to construct a DefineRoute annotation without value for '{$requiredKey}'");
+        });
+
         $this->method = $values["method"];
         $this->uri = $values["uri"];
-        $this->name = isset($values["name"]) ? $values["name"] : null;
+        $this->name = $values["name"] ?? null;
     }
 }

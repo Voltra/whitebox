@@ -2,22 +2,20 @@
 namespace WhiteBox\Routing\Controllers;
 
 
-use Doctrine\Common\Annotations\Annotation;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\IndexedReader;
 use ReflectionClass;
 use ReflectionMethod;
-use WhiteBox\Helpers\RegexHandler;
+use WhiteBox\Routing\Route;
 use WhiteBox\Routing\Abstractions\A_CisRouter;
 use WhiteBox\Routing\Abstractions\T_NamedRedirectionManager;
-use WhiteBox\Routing\Controllers\Routing;
-use WhiteBox\Routing\Controllers\SubRouting;
-use WhiteBox\Routing\Route;
+use WhiteBox\Routing\Controllers\Annotations\DefineRoute;
+use WhiteBox\Routing\Controllers\Annotations\DefineSubRouter;
 
 /**
  * Class A_ControllerSubRouter
- * @package WhiteBox\Routing
+ * @package WhiteBox\DefineRoute
  */
 abstract class A_ControllerSubRouter extends A_CisRouter{
     use T_NamedRedirectionManager;
@@ -40,12 +38,12 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
      */
     public function getPrefix(): string {
         $ThisClass = new ReflectionClass(static::class);
-        $subRoutingAnnotation = $this->annotationsReader->getClassAnnotation($ThisClass, SubRouting::class);
+        $defineSubRouterAnnotation = $this->annotationsReader->getClassAnnotation($ThisClass, DefineSubRouter::class);
 
-        if(is_null($subRoutingAnnotation))
-            throw new AnnotationException("There is no SubRouting annotation found for this controller");
+        if(is_null($defineSubRouterAnnotation))
+            throw new AnnotationException("There is no DefineSubRouter annotation found for this controller");
 
-        return $subRoutingAnnotation->prefix;
+        return $defineSubRouterAnnotation->prefix;
     }
 
     /**
@@ -53,28 +51,28 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
      */
     public function getRoutes(): array {
         $routeRefMethods = $this->getRouteMethods();
-        $routings = array_map(function(ReflectionMethod $method){
+        $definedRoutes = array_map(function(ReflectionMethod $method){
             $annotations = $this->annotationsReader->getMethodAnnotations($method);
             foreach($annotations as $annotation){
-                if($annotation instanceof Routing)
+                if($annotation instanceof DefineRoute)
                     return ["annotation"=>$annotation, "methodName"=>$method->getName()];
             }
             return null;
         }, $routeRefMethods);
-        $routings = array_filter($routings, function($elem){
+        $definedRoutes = array_filter($definedRoutes, function($elem){
             return !is_null($elem);
         });
 
         return array_map(function(array $routing): Route{
             /**
-             * @var Routing
+             * @var DefineRoute
              */
             $annotation = $routing["annotation"];
             $methodName = $routing["methodName"];
 
             return (new Route($annotation->method, $annotation->uri, [$this, $methodName], $this->getDefaultAuthMiddleware()))
             ->name($annotation->name);
-        }, $routings);
+        }, $definedRoutes);
     }
 
     /**
@@ -86,7 +84,7 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
         return array_filter($publics, function(ReflectionMethod $method){
             $annotations = $this->annotationsReader->getMethodAnnotations($method);
             return array_reduce($annotations, function(bool $acc, $annotation){
-                return $acc || ($annotation instanceof Routing);
+                return $acc || ($annotation instanceof DefineRoute);
             }, false);
         });
     }
@@ -116,7 +114,6 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
     /**
      * @param string $method
      * @return array
-     * @throws AnnotationException
      */
     protected  function getRoutesForMethod(string $method): array {
         return array_filter($this->getRoutes(), function(Route $route) use($method){
