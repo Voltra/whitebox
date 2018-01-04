@@ -25,7 +25,27 @@ $vd = new MagicalArray(); //View's data
  */
 class PhpHtmlRenderEngine implements I_ViewRenderEngine {
     /////////////////////////////////////////////////////////////////////////
+    //Properties
+    /////////////////////////////////////////////////////////////////////////
+    /**
+     * @var string
+     */
+    protected $baseUri = "";
+
+
+
+    /////////////////////////////////////////////////////////////////////////
     //Methods
+    /////////////////////////////////////////////////////////////////////////
+    public function setBaseUri(string $uri){
+        $this->baseUri = $uri;
+        return $this;
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Overrides
     /////////////////////////////////////////////////////////////////////////
     /** Renders a view to a HTML string from the given URI
      * @param ResponseInterface $res
@@ -38,7 +58,9 @@ class PhpHtmlRenderEngine implements I_ViewRenderEngine {
         self::beginViewRendering();
         ob_start();
         global $vd;
-        require "{$uri}";
+        $vd["response"] = $res;
+        $compiledUri = $this->baseUri . $uri;
+        require "{$compiledUri}";
         self::endViewRendering();
         return ob_get_clean();
     }

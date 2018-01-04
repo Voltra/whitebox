@@ -18,7 +18,11 @@ use WhiteBox\Http\Session;
 use WhiteBox\Rendering\T_ViewRenderEngine;
 
 
-
+/**
+ * Class Renderer
+ * @package WhiteBox\Rendering
+ * @deprecated
+ */
 class Renderer{
     /////////////////////////////////////////////////////////////////////////
     //Class properties

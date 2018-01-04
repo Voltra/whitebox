@@ -12,6 +12,7 @@ namespace WhiteBox\Routing\Abstractions;
 use WhiteBox\Routing\Router;
 
 
+
 /**A trait used to represent a route loader
  * Trait TRouteLoader
  * @package WhiteBox\Routing

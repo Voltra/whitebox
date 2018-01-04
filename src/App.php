@@ -9,24 +9,32 @@ namespace WhiteBox;
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
+
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use ReflectionClass;
-use WhiteBox\Http\HttpRedirectType;
+use InvalidArgumentException;
+use Noodlehaus\AbstractConfig;
+use WhiteBox\Helpers\ArrayHelper;
 use WhiteBox\Middlewares\T_MiddlewareHub;
+use WhiteBox\Rendering\Engine\PhpHtmlRenderEngine;
+use WhiteBox\Rendering\I_ViewRenderEngine;
 use WhiteBox\Routing\Abstractions\A_CisRouter;
 use WhiteBox\Routing\Abstractions\T_MetaRouter;
 use WhiteBox\Routing\Abstractions\T_NamedRedirectionManager;
 use WhiteBox\Routing\Abstractions\T_RouteBuilder;
 use WhiteBox\Routing\Abstractions\T_WildcardBasedRouteSystem;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use WhiteBox\Routing\Route;
+use WhiteBox\Routing\Router;
+use DI\Container;
+use DI\ContainerBuilder;
+use WhiteBox\Http\HttpRedirectType;
 use WhiteBox\Routing\Controllers\Annotations\DefineRoute;
 use WhiteBox\Routing\Controllers\Annotations\DefineSubRouter;
 use WhiteBox\Routing\Controllers\Annotations\Get;
 use WhiteBox\Routing\Controllers\Annotations\Post;
-use WhiteBox\Routing\Route;
-use WhiteBox\Routing\Router;
+use ReflectionClass;
 
 
 class App{
@@ -44,16 +52,6 @@ class App{
     use T_WildcardBasedRouteSystem;
 
 
-    /**
-     * App constructor.
-     * @throws AnnotationException
-     */
-    public function __construct() {
-        $this->MetaRouter__construct();
-        $this->MiddlewareHub__construct();
-        $this->router = new Router();
-        $this->bootstrapAnnotations();
-    }
 
     /////////////////////////////////////////////////////////////////////////
     //Properties
@@ -63,7 +61,52 @@ class App{
      */
     protected $router;
 
+    /**
+     * @var Container
+     */
+    public $container;
 
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Magics
+    /////////////////////////////////////////////////////////////////////////
+    /**
+     * App constructor.
+     */
+    public function __construct() {
+        $this->MetaRouter__construct();
+        $this->MiddlewareHub__construct();
+
+        $this->router = new Router();
+        $this->loadConfig(static::getDefaultDependencyInjectionDefinitions());
+
+        $this->bootstrapAnnotations();
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    public function __get(string $name) {
+        return $this->container->get($name);
+    }
+
+    public function __isset(string $name) {
+        return $this->container->has($name);
+    }
+
+    public function has(string $name){
+        return $this->__isset($name);
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Methods
+    /////////////////////////////////////////////////////////////////////////
     protected function bootstrapAnnotations(){
         AnnotationRegistry::registerLoader("class_exists");//TODO: Watch for deprectation
 
@@ -78,8 +121,47 @@ class App{
             if(!AnnotationRegistry::loadAnnotationClass($annotationClass))
                 throw new AnnotationException("Couldn't load annotation from: {$annotationClass}");
         });
+
+        return $this;
     }
 
+    public function loadConfig(array $config, bool $autoWiring=true, bool $useAnnotations=false){
+        if(!ArrayHelper::is_assoc($config))
+            throw new InvalidArgumentException("The configuration array must be an associative array");
+
+        $definitions = array_merge(static::getDefaultDependencyInjectionDefinitions(), $config);
+
+        $this->container = (new ContainerBuilder())
+        ->addDefinitions($definitions)
+        ->useAutowiring($autoWiring)
+        ->useAnnotations($useAnnotations)
+        ->build();
+
+        return $this;
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Class methods
+    /////////////////////////////////////////////////////////////////////////
+    public static function getDefaultConfig(): AbstractConfig{
+        return new AppConfig([]);
+    }
+
+    public static function getDefaultDependencyInjectionDefinitions(): array{
+        return [
+            "config" => static::getDefaultConfig(),
+            "view" => \DI\object(PhpHtmlRenderEngine::class),
+            I_ViewRenderEngine::class => \DI\get("view")
+        ];
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Overrides
+    /////////////////////////////////////////////////////////////////////////
     public function redirect(string $url, ResponseInterface $res, ?HttpRedirectType $status = null) : ResponseInterface{
         return $this->router->redirect($url, $res, $status);
     }
@@ -92,10 +174,6 @@ class App{
         return $this->router->urlFor($routeName, $uriParams);
     }
 
-
-    /////////////////////////////////////////////////////////////////////////
-    //Overrides
-    /////////////////////////////////////////////////////////////////////////
     /**Register a subrouter in this metarouter
      * @param A_CisRouter $subrouter being the cisrouter(subrouter) to register in this metarouter
      * @return $this

@@ -12,11 +12,16 @@ namespace WhiteBox\Routing\Abstractions;
 use WhiteBox\Helpers\RegexHandler;
 use WhiteBox\Routing\Route;
 
+
+
 /**
  * Trait T_WildcardBasedArrayRouteManager
  * @package WhiteBox\Routing\Abstractions
  */
 trait T_WildcardBasedArrayRouteManager{
+    /////////////////////////////////////////////////////////////////////////
+    //Traits used
+    /////////////////////////////////////////////////////////////////////////
     use T_WildcardBasedRouteManager;
 
 

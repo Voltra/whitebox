@@ -12,5 +12,7 @@ $data = $vd;
         <h1><?= __FILE__; ?></h1>
         <hr/>
         <p>This is a homepage made via the native PHP pseudo-rendering system on PHP#<?= $data("version") ?>.</p>
+        <hr/>
+        <?= $this->render($data["response"], "partials/test.php"); ?>
     </body>
 </html>

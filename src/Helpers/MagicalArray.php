@@ -176,6 +176,10 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
         return $this->size();
     }
 
+    public function asArray(): array{
+        return array_merge([], $this->array);
+    }
+
 
 
     /////////////////////////////////////////////////////////////////////////

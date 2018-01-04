@@ -23,7 +23,7 @@ class ApiController extends A_ControllerSubRouter{
      * @Get(uri="/grab/:id", name="api.get")
      */
     public function grab(string $id, ServerRequestInterface $rq, ResponseInterface $res){
-        return Renderer::renderView($res, "api/grab.php", [
+        return $this->view->render($res, "api/grab.php", [
             "request" => $rq,
             "phpversion" => phpversion(),
             "id" => $id
@@ -39,7 +39,7 @@ class ApiController extends A_ControllerSubRouter{
      * @DefineRoute(method="GET", uri="/test", name="api.test")
      */
     public function test(ServerRequestInterface $rq, ResponseInterface $res){
-        return Renderer::render($res, "api/test.php", [
+        return $this->view->render($res, "api/test.php", [
             "request" => $rq,
             "phpversion" => phpversion()
         ]);

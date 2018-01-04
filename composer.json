@@ -25,7 +25,9 @@
         "guzzlehttp/psr7": "^1.4",
         "myclabs/php-enum": "^1.5",
         "http-interop/response-sender": "^1.0",
-        "doctrine/annotations": "^1.6"
+        "doctrine/annotations": "^1.6",
+        "php-di/php-di": "^5.4",
+        "hassankhan/config": "^0.11.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.4",

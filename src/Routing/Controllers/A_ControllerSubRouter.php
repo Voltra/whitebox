@@ -1,38 +1,69 @@
 <?php
+/////////////////////////////////////////////////////////////////////////
+//Namespace
+/////////////////////////////////////////////////////////////////////////
 namespace WhiteBox\Routing\Controllers;
 
 
+
+/////////////////////////////////////////////////////////////////////////
+//Imports
+/////////////////////////////////////////////////////////////////////////
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\IndexedReader;
 use ReflectionClass;
 use ReflectionMethod;
+use WhiteBox\Rendering\I_ViewRenderEngine;
 use WhiteBox\Routing\Route;
 use WhiteBox\Routing\Abstractions\A_CisRouter;
 use WhiteBox\Routing\Abstractions\T_NamedRedirectionManager;
 use WhiteBox\Routing\Controllers\Annotations\DefineRoute;
 use WhiteBox\Routing\Controllers\Annotations\DefineSubRouter;
 
-/**
+
+
+/**A class that represents the shared behavior of controllers as subrouters
  * Class A_ControllerSubRouter
  * @package WhiteBox\DefineRoute
  */
 abstract class A_ControllerSubRouter extends A_CisRouter{
+    /////////////////////////////////////////////////////////////////////////
+    //Traits used
+    /////////////////////////////////////////////////////////////////////////
     use T_NamedRedirectionManager;
 
-    protected $annotationsReader;
 
+
+    /////////////////////////////////////////////////////////////////////////
+    //Properties
+    /////////////////////////////////////////////////////////////////////////
+    protected $annotationsReader;
+    protected $view;
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Magics
+    /////////////////////////////////////////////////////////////////////////
     /**
      * A_ControllerSubRouter constructor.
+     * @param I_ViewRenderEngine $view
      * @param callable|null $defaultAuthMW
      * @throws AnnotationException
      */
-    public function __construct(?callable $defaultAuthMW = null) {
+    public function __construct(I_ViewRenderEngine $view, ?callable $defaultAuthMW = null) {
         $this->annotationsReader = new IndexedReader(new AnnotationReader());
+        $this->view = $view;
         parent::__construct($this->getPrefix(), $defaultAuthMW);
     }
 
-    /**
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Methods
+    /////////////////////////////////////////////////////////////////////////
+    /**Retrieves the prefix for this controller
      * @return string
      * @throws AnnotationException
      */
@@ -46,6 +77,25 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
         return $defineSubRouterAnnotation->prefix;
     }
 
+    /**Returns the methods of this controller that are defined as routes (as reflection methods)
+     * @return ReflectionMethod[]
+     */
+    protected function getRouteMethods(): array{
+        $ThisClass = new ReflectionClass(static::class);
+        $publics = $ThisClass->getMethods(ReflectionMethod::IS_PUBLIC);
+        return array_filter($publics, function(ReflectionMethod $method){
+            $annotations = $this->annotationsReader->getMethodAnnotations($method);
+            return array_reduce($annotations, function(bool $acc, $annotation){
+                return $acc || ($annotation instanceof DefineRoute);
+            }, false);
+        });
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Overrides
+    /////////////////////////////////////////////////////////////////////////
     /**
      * @return array
      */
@@ -73,20 +123,6 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
             return (new Route($annotation->method, $annotation->uri, [$this, $methodName], $this->getDefaultAuthMiddleware()))
             ->name($annotation->name);
         }, $definedRoutes);
-    }
-
-    /**
-     * @return ReflectionMethod[]
-     */
-    protected function getRouteMethods(): array{
-        $ThisClass = new ReflectionClass(static::class);
-        $publics = $ThisClass->getMethods(ReflectionMethod::IS_PUBLIC);
-        return array_filter($publics, function(ReflectionMethod $method){
-            $annotations = $this->annotationsReader->getMethodAnnotations($method);
-            return array_reduce($annotations, function(bool $acc, $annotation){
-                return $acc || ($annotation instanceof DefineRoute);
-            }, false);
-        });
     }
 
     protected function hasRoute(string $method, string $re): bool {

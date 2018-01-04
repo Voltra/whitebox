@@ -1,12 +1,23 @@
 <?php
+/////////////////////////////////////////////////////////////////////////
+//Namespace
+/////////////////////////////////////////////////////////////////////////
 namespace WhiteBox\Middlewares;
 
 
+
+/////////////////////////////////////////////////////////////////////////
+//Imports
+/////////////////////////////////////////////////////////////////////////
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use WhiteBox\App;
+
+
 
 trait T_MiddlewareHub {
+    /////////////////////////////////////////////////////////////////////////
+    //Properties
+    /////////////////////////////////////////////////////////////////////////
     /**
      * @var A_Middleware[]
      */
@@ -17,13 +28,26 @@ trait T_MiddlewareHub {
      */
     protected $index;
 
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Magics
+    /////////////////////////////////////////////////////////////////////////
     public function __construct(){
         $this->middlewares = [];
         $this->index = 0;
     }
 
-    protected function has(A_Middleware $middleware) : bool{
-        $class = get_class($middleware);
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //Methods
+    /////////////////////////////////////////////////////////////////////////
+    /**Determines whether or not there is already a middleware in this middleware hub
+     * @param string $class being the class of the requested middleware
+     * @return bool
+     */
+    protected function hasMiddleware(string $class) : bool{
         $classes = array_map(function(A_Middleware $m){
             return get_class($m);
         }, $this->middlewares);
@@ -31,13 +55,20 @@ trait T_MiddlewareHub {
         return in_array($class, $classes);
     }
 
+    /**Pipes a middleware to the middleware execution queue
+     * @param A_Middleware $middleware being the new middleware to add
+     * @return $this
+     */
     public function pipe(A_Middleware $middleware){
-        if(!$this->has($middleware))
+        if(!$this->hasMiddleware(get_class($middleware)))
             $this->middlewares[] = $middleware;
 
         return $this;
     }
 
+    /**Retrieves the current middleware (the one that needs to be executed)
+     * @return null|A_Middleware
+     */
     protected function getCurrent(): ?A_Middleware{
         if(isset($this->middlewares[$this->index]))
             return $this->middlewares[$this->index];
@@ -45,6 +76,11 @@ trait T_MiddlewareHub {
         return null;
     }
 
+    /**Processes the entire middleware queue in a fancy recursive manner
+     * @param ServerRequestInterface $rq being the current HTTP request
+     * @param ResponseInterface $res being the current HTTP response
+     * @return ResponseInterface
+     */
     public function process(ServerRequestInterface $rq, ResponseInterface $res): ResponseInterface{
         $current = $this->getCurrent();
         $this->index += 1;

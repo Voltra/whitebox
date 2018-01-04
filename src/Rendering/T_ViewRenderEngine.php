@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 /**A Trait used to represent a view render engine's behavior
  * Trait T_ViewRenderEngine
  * @package WhiteBox\Rendering
+ * @deprecated
  */
 trait T_ViewRenderEngine{
     /////////////////////////////////////////////////////////////////////////

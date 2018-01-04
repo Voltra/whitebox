@@ -10,6 +10,7 @@ class ComposerStaticInit6b024b2187000fc3792cb82eb9ea7951
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '6f2c5977e422114bbaec553e7c77ee8b' => __DIR__ . '/..' . '/http-interop/response-sender/src/functions.php',
+        'bbf73f3db644d3dced353b837903e74c' => __DIR__ . '/..' . '/php-di/php-di/src/DI/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -26,10 +27,21 @@ class ComposerStaticInit6b024b2187000fc3792cb82eb9ea7951
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
+            'Psr\\Container\\' => 14,
+            'PhpDocReader\\' => 13,
+        ),
+        'N' => 
+        array (
+            'Noodlehaus\\' => 11,
         ),
         'M' => 
         array (
             'MyCLabs\\Enum\\' => 13,
+        ),
+        'I' => 
+        array (
+            'Invoker\\' => 8,
+            'Interop\\Container\\' => 18,
         ),
         'G' => 
         array (
@@ -40,6 +52,7 @@ class ComposerStaticInit6b024b2187000fc3792cb82eb9ea7951
             'Doctrine\\Instantiator\\' => 22,
             'Doctrine\\Common\\Annotations\\' => 28,
             'DeepCopy\\' => 9,
+            'DI\\' => 3,
         ),
     );
 
@@ -67,9 +80,29 @@ class ComposerStaticInit6b024b2187000fc3792cb82eb9ea7951
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'PhpDocReader\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-di/phpdoc-reader/src/PhpDocReader',
+        ),
+        'Noodlehaus\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/hassankhan/config/src',
+        ),
         'MyCLabs\\Enum\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/php-enum/src',
+        ),
+        'Invoker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-di/invoker/src',
+        ),
+        'Interop\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -86,6 +119,10 @@ class ComposerStaticInit6b024b2187000fc3792cb82eb9ea7951
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'DI\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-di/php-di/src/DI',
         ),
     );
 

@@ -9,4 +9,5 @@ return array(
     '6124b4c8570aa390c21fafd04a26c69f' => $vendorDir . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
     'a0edc8309cc5e1d60e3047b5df6b7052' => $vendorDir . '/guzzlehttp/psr7/src/functions_include.php',
     '6f2c5977e422114bbaec553e7c77ee8b' => $vendorDir . '/http-interop/response-sender/src/functions.php',
+    'bbf73f3db644d3dced353b837903e74c' => $vendorDir . '/php-di/php-di/src/DI/functions.php',
 );

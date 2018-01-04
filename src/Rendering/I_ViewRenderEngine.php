@@ -6,6 +6,7 @@ namespace WhiteBox\Rendering;
 use Psr\Http\Message\ResponseInterface;
 
 
+
 /**An Interface used to represent a view render engine's behavior
  * Interface I_ViewRenderEngine
  * @package WhiteBox\Rendering

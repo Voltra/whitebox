@@ -21,6 +21,9 @@ use Psr\Http\Message\ServerRequestInterface;
  * @package WhiteBox\Routing
  */
 trait T_RouteDispatcher{
+    /////////////////////////////////////////////////////////////////////////
+    //Methods
+    /////////////////////////////////////////////////////////////////////////
     /**The protected way to handle a request
      * @param ServerRequestInterface $request being the request to handle
      * @param ResponseInterface $response
