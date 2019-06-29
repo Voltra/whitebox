@@ -21,6 +21,6 @@ abstract class IntEnum extends TypedEnum{
     //Overrides
     /////////////////////////////////////////////////////////////////////////
     public final static function isOfCorrectType($value): bool{
-        return (bool)is_integer($value);
+        return (bool)is_int($value);
     }
 }

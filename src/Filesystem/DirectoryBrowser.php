@@ -24,10 +24,11 @@ class DirectoryBrowser extends AbstractDirectoryBrowser{
     /////////////////////////////////////////////////////////////////////////
     //Magics
     /////////////////////////////////////////////////////////////////////////
-    /**Construct a browser to a directory from its URI
-     * DirectoryBrowser constructor.
-     * @param string $uri
-     */
+	/**Construct a browser to a directory from its URI
+	 * DirectoryBrowser constructor.
+	 * @param string $uri
+	 * @throws \Exception
+	 */
     public function __construct(string $uri){
         parent::__construct($uri);
     }

@@ -32,4 +32,10 @@ interface I_Session{
      * @param string $key
      */
     public static function delete(string $key): void;
+
+	/**Determines if an information can be retrieved from the session
+	 * @param string $key
+	 * @return bool
+	 */
+    public static function has(string $key): bool;
 }

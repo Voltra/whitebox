@@ -25,7 +25,7 @@ class Route{
     /**A class constant array
      * @var array
      */
-    const METHODS = [
+    public const METHODS = [
         "GET",
         "POST",
         "PUT",
@@ -83,13 +83,13 @@ class Route{
 
         $this->_regex = $re;
 
-        if(!is_null($functor))
+        if($functor !== null)
             $this->_handler = $functor;
 
-        if(!is_null($functor))
+        if($functor !== null)
             $this->_authorisationMiddleware = $authMiddleware;
         else
-            $this->_authorisationMiddleware = function(){
+            $this->_authorisationMiddleware = static function(){
                 return true;
             };
 
@@ -106,7 +106,7 @@ class Route{
      * @return $this
      */
     public function name(string $name): self{
-        $this->_name = "{$name}";
+        $this->_name = (string)$name;
         return $this;
     }
 
@@ -166,7 +166,7 @@ class Route{
      * @return bool
      */
     public function hasHandler(): bool{
-        return isset($this->_handler) && !is_null($this->_handler);
+        return isset($this->_handler) && $this->_handler !== null;
     }
 
     /**Sets the middleware for this Route
@@ -192,6 +192,6 @@ class Route{
      * @return bool
      */
     public function hasAuthMiddleware(): bool{
-        return isset($this->_authorisationMiddleware) && !is_null($this->_authorisationMiddleware);
+        return isset($this->_authorisationMiddleware) && $this->_authorisationMiddleware !== null;
     }
 }

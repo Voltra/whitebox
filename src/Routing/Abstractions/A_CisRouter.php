@@ -54,7 +54,7 @@ abstract class A_CisRouter{
         $this->WBARM__construct();
         $this->routes = [];
         $this->prefix = $prefix;
-        $this->defaultAuthMW = is_null($defaultAuthMW) ? function(){ return true; } : $defaultAuthMW;
+        $this->defaultAuthMW = $defaultAuthMW ?? static function () { return true; };
     }
 
 

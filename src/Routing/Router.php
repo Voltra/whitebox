@@ -125,10 +125,10 @@ class Router {
     protected function setupRoute(string $method, string $re, callable $functor, ?callable $authMiddleware = null): Route {
         if ($this->hasRoute($method, $re)) {
             $route = $this->getRoute($method, $re);
-            if (!is_null($route)) {
+            if ($route !== null) {
                 $route->setHandler($functor);
 
-                if (!is_null($authMiddleware))
+                if ($authMiddleware !== null)
                     $route->setAuthMiddleware($authMiddleware);
             }
 
@@ -141,7 +141,7 @@ class Router {
         $this->addRoute($route);
         $route->setHandler($functor);
 
-        if (!is_null($authMiddleware))
+        if ($authMiddleware !== null)
             $route->setAuthMiddleware($authMiddleware);
 
         return $route;
@@ -159,13 +159,13 @@ class Router {
         $uri = $request->getUri()->getPath();
 
         $trimmed_uri = rtrim($uri, "/"); //Removes the trailing slash if there's one, not if root though
-        if ($trimmed_uri == "")//If the trimmed string is empty, it was the root that was requested
+        if ($trimmed_uri === "")//If the trimmed string is empty, it was the root that was requested
             $trimmed_uri = "/"; //Then replace it with the root
 
-        if ($uri != $trimmed_uri) //If the trimmed version is different, then permanent redirect
+        if ($uri !== $trimmed_uri) //If the trimmed version is different, then permanent redirect
             return $this->redirect($trimmed_uri, $response, HttpRedirectType::PERMANENT());
 
-        $route = array_reduce($routes, function ($acc, Route $route) use ($uri) {
+        $route = array_reduce($routes, static function ($acc, Route $route) use ($uri) {
             $regex = new RegexHandler(self::makeRegex($route->regex()));
             if ($regex->appliesTo($uri))
                 $acc = $route;
@@ -173,7 +173,7 @@ class Router {
             return $acc;
         }, null);
 
-        if (is_null($route)){
+        if ($route === null){
             $response = $response->withStatus(404);
             $route = $this->getRoute("error", "404"); //One must always be defined
         }else if (!call_user_func($route->getAuthMiddleware(), $request)) {
@@ -206,16 +206,16 @@ class Router {
 
 
     protected function getAllTransformedRoutesForMethod(string $method): array {
-        return array_filter($this->getAllTransformedRoutes(), function (Route $route) use ($method) {
+        return array_filter($this->getAllTransformedRoutes(), static function (Route $route) use ($method) {
             return $route->method() === $method;
         });
     }
 
     protected function getAllTransformedRoutes(): array {
-        return array_reduce($this->subrouters, function (array $tRoutes, A_CisRouter $subrouter) {
-            return array_merge($tRoutes, array_map(function (Route $route) use ($subrouter) {
+        return array_reduce($this->subrouters, static function (array $tRoutes, A_CisRouter $subrouter) {
+            return array_merge($tRoutes, array_map(static function (Route $route) use ($subrouter) {
                 $r = new Route($route->method(), $subrouter->getPrefix() . rtrim($route->regex(), "/"), $route->getHandler());
-                $r->setAuthMiddleware(function() use($route, $subrouter){
+                $r->setAuthMiddleware(static function() use($route, $subrouter){
                     return call_user_func_array($route->getAuthMiddleware(),[])
                         && call_user_func_array($subrouter->getDefaultAuthMiddleware(), []);
                 });

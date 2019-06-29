@@ -46,7 +46,7 @@ class Renderer{
      * @return bool
      */
     public static function hasRenderEngine(): bool{
-        return !is_null(self::$engine);
+        return self::$engine !== null;
     }
 
     /**Checks whether or not there's a render engine available, if there's one it also checks if it is valid (has a "render" method)
@@ -131,6 +131,6 @@ class Renderer{
      * @param string $path being the base path for all view files
      */
     public static function setBaseLocation(string $path): void{
-        self::$baseLocation = "{$path}";
+        self::$baseLocation = (string)($path);
     }
 }

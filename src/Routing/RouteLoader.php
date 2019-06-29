@@ -14,6 +14,7 @@ use Exception;
 use WhiteBox\Helpers\MagicalArray;
 use WhiteBox\Routing\Abstractions\A_RouteManager;
 use WhiteBox\Routing\Abstractions\T_RouteLoader;
+use WhiteBox\Routing\Abstractions\T_RouteManager;
 use WhiteBox\Routing\Router;
 
 
@@ -31,15 +32,16 @@ class RouteLoader{
     /////////////////////////////////////////////////////////////////////////
     //Methods
     /////////////////////////////////////////////////////////////////////////
-    /**Loads all the routes located in the path (use this only in case of extreme emergency/bad code)
-     * Use this inside your code
-     * @param A_RouteManager $manager being the A_RouteManager to add the routes to
-     * @param string $alias being the name of the Router as used in the route declaration files
-     * @return void
-     */
-    public function loadRoutes(A_RouteManager $manager, string $alias): void{
+	/**Loads all the routes located in the path (use this only in case of extreme emergency/bad code)
+	 * Use this inside your code
+	 * @param T_RouteManager $manager being the T_RouteManager to add the routes to
+	 * @param string $alias being the name of the Router as used in the route declaration files
+	 * @return void
+	 * @throws Exception
+	 */
+    public function loadRoutes(/*A_RouteManager*/ $manager, string $alias): void{
         $this->getPhpFiles()
-        ->forEach(function(string $phpFile) use($manager, $alias){
+        ->forEach(static function(string $phpFile) use($manager, $alias){
             ${$alias} = $manager;
             require_once "{$phpFile}";
         });
@@ -59,7 +61,7 @@ class RouteLoader{
             throw new Exception("failed to create the autoloader file for the route loader.");
 
         fwrite($autoloader, "<?php\n");
-        $phpFiles->forEach(function(string $filePath) use($autoloader){
+        $phpFiles->forEach(static function(string $filePath) use($autoloader){
             fwrite($autoloader, "require_once '{$filePath}';\n");
         });
         fclose($autoloader);
@@ -67,22 +69,22 @@ class RouteLoader{
         return (string)realpath($autoloaderFileURI);
     }
 
-    /**Retrieves the PHP files path from the directory of this loader
-     * @return MagicalArray
-     */
+	/**Retrieves the PHP files path from the directory of this loader
+	 * @return MagicalArray
+	 * @throws Exception
+	 */
     protected function getPhpFiles(): MagicalArray{
         return (new RecursiveDirectoryBrowser($this->path))
         ->toMagicalArray()
-        ->filter(function(string $elem){
+        ->filter(static function(string $elem){
             ["extension" => $extension] = pathinfo($elem);
-            $isPhp = $extension === "php";
-            return $isPhp;
+			return $extension === "php";
         })
-        ->sortBy(function(string $lhs, string $rhs): int{
+        ->sortBy(static function(string $lhs, string $rhs): int{
             if($lhs === $rhs)
                 return 0;
             else{
-                $depthOf = function(string $str): int{
+                $depthOf = static function(string $str): int{
                     $str = str_replace("\\", "/", $str);
                     $d = substr_count($str, "/");
                     if($d === false)
@@ -90,8 +92,8 @@ class RouteLoader{
                     return $d;
                 };
 
-                $depthLhs = call_user_func($depthOf, $lhs);
-                $depthRhs = call_user_func($depthOf, $rhs);
+                $depthLhs = $depthOf($lhs);
+                $depthRhs = $depthOf($rhs);
 
                 if($depthLhs === $depthRhs)
                     return $lhs <=> $rhs;

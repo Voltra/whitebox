@@ -238,7 +238,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @since 5.0.0
      */
     public function offsetSet($offset, $value): void{
-        if(is_null($offset))
+        if($offset === null)
             $this->array[] = $value;
         else
             $this->array[$offset] = $value;
@@ -277,7 +277,7 @@ class MagicalArray implements IteratorAggregate, ArrayAccess, Countable, Seriali
      * @since 5.1.0
      */
     public function unserialize($serialized): void{
-        self::__construct(unserialize($serialized));
+        $this->__construct(unserialize($serialized));
     }
 
     /**Allows to any MagicalArray to be passed to count() as an argument

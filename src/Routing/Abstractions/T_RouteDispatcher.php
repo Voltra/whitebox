@@ -37,14 +37,14 @@ trait T_RouteDispatcher{
      * @return mixed
      */
     public function run(?ServerRequestInterface $request = null, ?ResponseInterface $response = null){
-        if(is_null($request))
+        if($request === null)
             $request = ServerRequest::fromGlobals();
 
-        if(is_null($response))
+        if($response === null)
             $response = (new Response())->withStatus(200);
 
         $finalResponse = $this->handleRequest($request, $response);
-        \Http\Response\send($finalResponse);
+        send($finalResponse);
         return $finalResponse;
     }
 }

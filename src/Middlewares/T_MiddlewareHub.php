@@ -48,7 +48,7 @@ trait T_MiddlewareHub {
      * @return bool
      */
     protected function hasMiddleware(string $class) : bool{
-        $classes = array_map(function(A_Middleware $m){
+        $classes = array_map(static function(A_Middleware $m){
             return get_class($m);
         }, $this->middlewares);
 
@@ -85,7 +85,7 @@ trait T_MiddlewareHub {
         $current = $this->getCurrent();
         $this->index += 1;
 
-        if(is_null($current))
+        if($current === null)
             return $res;
         else
             return $current->process($rq, $res, [$this, "process"]);

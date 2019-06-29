@@ -55,7 +55,7 @@ class DefineRoute{
      */
     public function __construct(array $values) {
         $requiredKeys = ["method", "uri"];
-        array_walk($requiredKeys, function(string $requiredKey) use($values){
+        array_walk($requiredKeys, static function(string $requiredKey) use($values){
             if(!array_key_exists($requiredKey, $values))
                 throw new AnnotationException("Tried to construct a DefineRoute annotation without value for '{$requiredKey}'");
         });

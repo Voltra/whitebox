@@ -89,14 +89,12 @@ class T_MiddlewareHubTest extends PHPUnit{
 
 
 class MiddlewareA extends A_Middleware{
-
     public function process(ServerRequestInterface $rq, ResponseInterface $res, callable $next): ResponseInterface {
         return $res;
     }
 }
 
 class MiddlewareB extends A_Middleware{
-
     public function process(ServerRequestInterface $rq, ResponseInterface $res, callable $next): ResponseInterface {
         return $res;
     }

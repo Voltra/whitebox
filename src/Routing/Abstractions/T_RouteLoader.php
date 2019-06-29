@@ -45,10 +45,10 @@ trait T_RouteLoader{
     //Methods
     /////////////////////////////////////////////////////////////////////////
     /**Loads all the routes located in the path
-     * @param A_RouteManager $manager being the A_RouteManager to add the routes to
+     * @param T_RouteManager $manager being the T_RouteManager to add the routes to
      * @return void
      */
-    public abstract function loadRoutes(A_RouteManager $manager): void;
+    public abstract function loadRoutes(/*A_RouteManager*/ $manager): void;
 
     /**
      * @param string $fileURI

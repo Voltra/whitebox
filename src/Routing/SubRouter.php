@@ -15,10 +15,10 @@ class SubRouter extends A_CisRouter{
     protected function setupRoute(string $method, string $re, callable $functor, ?callable $authMiddleware = null): Route {
         if ($this->hasRoute($method, $re)) {
             $route = $this->getRoute($method, $re);
-            if (!is_null($route)) {
+            if ($route !== null) {
                 $route->setHandler($functor);
 
-                if (!is_null($authMiddleware))
+                if ($authMiddleware !== null)
                     $route->setAuthMiddleware($authMiddleware);
             }
 
@@ -31,7 +31,7 @@ class SubRouter extends A_CisRouter{
         $this->addRoute($route);
         $route->setHandler($functor);
 
-        if (!is_null($authMiddleware))
+        if ($authMiddleware !== null)
             $route->setAuthMiddleware($authMiddleware);
 
         return $route;
@@ -78,7 +78,7 @@ class SubRouter extends A_CisRouter{
      */
     protected function getRoutesForMethod(string $method): array {
         if(in_array($method, Route::METHODS, true)){
-            return array_filter($this->routes, function(Route $route) use($method){
+            return array_filter($this->routes, static function(Route $route) use($method){
                 return $route->method() === $method;
             });
         }else

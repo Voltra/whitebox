@@ -63,29 +63,31 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
     /////////////////////////////////////////////////////////////////////////
     //Methods
     /////////////////////////////////////////////////////////////////////////
-    /**Retrieves the prefix for this controller
-     * @return string
-     * @throws AnnotationException
-     */
+	/**Retrieves the prefix for this controller
+	 * @return string
+	 * @throws AnnotationException
+	 * @throws \ReflectionException
+	 */
     public function getPrefix(): string {
         $ThisClass = new ReflectionClass(static::class);
         $defineSubRouterAnnotation = $this->annotationsReader->getClassAnnotation($ThisClass, DefineSubRouter::class);
 
-        if(is_null($defineSubRouterAnnotation))
+        if($defineSubRouterAnnotation === null)
             throw new AnnotationException("There is no DefineSubRouter annotation found for this controller");
 
         return $defineSubRouterAnnotation->prefix;
     }
 
-    /**Returns the methods of this controller that are defined as routes (as reflection methods)
-     * @return ReflectionMethod[]
-     */
+	/**Returns the methods of this controller that are defined as routes (as reflection methods)
+	 * @return ReflectionMethod[]
+	 * @throws \ReflectionException
+	 */
     protected function getRouteMethods(): array{
         $ThisClass = new ReflectionClass(static::class);
         $publics = $ThisClass->getMethods(ReflectionMethod::IS_PUBLIC);
         return array_filter($publics, function(ReflectionMethod $method){
             $annotations = $this->annotationsReader->getMethodAnnotations($method);
-            return array_reduce($annotations, function(bool $acc, $annotation){
+            return array_reduce($annotations, static function(bool $acc, $annotation){
                 return $acc || ($annotation instanceof DefineRoute);
             }, false);
         });
@@ -96,9 +98,10 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
     /////////////////////////////////////////////////////////////////////////
     //Overrides
     /////////////////////////////////////////////////////////////////////////
-    /**
-     * @return array
-     */
+	/**
+	 * @return array
+	 * @throws \ReflectionException
+	 */
     public function getRoutes(): array {
         $routeRefMethods = $this->getRouteMethods();
         $definedRoutes = array_map(function(ReflectionMethod $method){
@@ -110,7 +113,7 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
             return null;
         }, $routeRefMethods);
         $definedRoutes = array_filter($definedRoutes, function($elem){
-            return !is_null($elem);
+            return $elem !== null;
         });
 
         return array_map(function(array $routing): Route{
@@ -147,12 +150,13 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
         $this->routes[] = $route;
     }
 
-    /**
-     * @param string $method
-     * @return array
-     */
+	/**
+	 * @param string $method
+	 * @return array
+	 * @throws \ReflectionException
+	 */
     protected  function getRoutesForMethod(string $method): array {
-        return array_filter($this->getRoutes(), function(Route $route) use($method){
+        return array_filter($this->getRoutes(), static function(Route $route) use($method){
             return $route->method() === $method;
         });
     }
@@ -160,10 +164,10 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
     protected function setupRoute(string $method, string $re, callable $functor, ?callable $authMiddleware = null): Route {
         if ($this->hasRoute($method, $re)) {
             $route = $this->getRoute($method, $re);
-            if (!is_null($route)) {
+            if ($route !== null) {
                 $route->setHandler($functor);
 
-                if (!is_null($authMiddleware))
+                if ($authMiddleware !== null)
                     $route->setAuthMiddleware($authMiddleware);
             }
 
@@ -176,7 +180,7 @@ abstract class A_ControllerSubRouter extends A_CisRouter{
         $this->addRoute($route);
         $route->setHandler($functor);
 
-        if (!is_null($authMiddleware))
+        if ($authMiddleware !== null)
             $route->setAuthMiddleware($authMiddleware);
 
         return $route;

@@ -29,7 +29,7 @@ trait T_RedirectionManager {
      * @return ResponseInterface
      */
     public function redirect(string $location, ResponseInterface $res, ?HttpRedirectType $status = null): ResponseInterface{
-        if(is_null($status))
+        if($status === null)
             $status = HttpRedirectType::FOUND();
 
         return $res->withHeader("Location", $location)->withStatus($status->getCode());

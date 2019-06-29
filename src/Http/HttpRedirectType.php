@@ -22,8 +22,8 @@ class HttpRedirectType extends IntEnum{
     /////////////////////////////////////////////////////////////////////////
     //Class constants
     /////////////////////////////////////////////////////////////////////////
-    const PERMANENT = 301;
-    const FOUND = 302;
+    public const PERMANENT = 301;
+    public const FOUND = 302;
 
 
 
@@ -34,6 +34,6 @@ class HttpRedirectType extends IntEnum{
      * @return int
      */
     public function getCode(): int{
-        return (int)($this->getValue());
+        return (int)$this->getValue();
     }
 }

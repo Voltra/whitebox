@@ -9,11 +9,12 @@ namespace WhiteBox;
 /////////////////////////////////////////////////////////////////////////
 //Imports
 /////////////////////////////////////////////////////////////////////////
-
+use DI\DependencyException;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use InvalidArgumentException;
 use Noodlehaus\AbstractConfig;
+use ReflectionException;
 use WhiteBox\Helpers\ArrayHelper;
 use WhiteBox\Middlewares\T_MiddlewareHub;
 use WhiteBox\Rendering\Engine\PhpHtmlRenderEngine;
@@ -87,18 +88,22 @@ class App{
     /**
      * @param string $name
      * @return mixed
-     * @throws \DI\DependencyException
+     * @throws DependencyException
      * @throws \DI\NotFoundException
      */
-    public function __get(string $name) {
+    public function __get(string $name){
         return $this->container->get($name);
     }
 
-    public function __isset(string $name) {
+    public function __isset(string $name){
         return $this->container->has($name);
     }
 
-    public function has(string $name){
+    public function __set(string $name, $value){
+		return $this->container->set($name, $value);
+	}
+
+	public function has(string $name): bool {
         return $this->__isset($name);
     }
 
@@ -117,7 +122,7 @@ class App{
             Post::class
         ];
 
-        array_walk($annotationClasses, function(string $annotationClass){
+        array_walk($annotationClasses, static function(string $annotationClass){
             if(!AnnotationRegistry::loadAnnotationClass($annotationClass))
                 throw new AnnotationException("Couldn't load annotation from: {$annotationClass}");
         });
@@ -183,10 +188,11 @@ class App{
         return $this;
     }
 
-    /**
-     * @param string $method
-     * @return array
-     */
+	/**
+	 * @param string $method
+	 * @return array
+	 * @throws ReflectionException
+	 */
     protected function getAllTransformedRoutesForMethod(string $method): array {
         $getAllTransformedRoutesForMethod = (new ReflectionClass(Router::class))
         ->getMethod("getAllTransformedRoutesForMethod");
@@ -211,7 +217,7 @@ class App{
 
     protected function getAllTransformedRoutes(): array {
         $getAllTransformedRoutes = (new ReflectionClass(Router::class))
-            ->getMethod("getAllTransformedRoutes");
+		->getMethod("getAllTransformedRoutes");
 
         $getAllTransformedRoutes->setAccessible(true);
         $ret = $getAllTransformedRoutes->invoke($this->router);
@@ -220,11 +226,12 @@ class App{
         return $ret;
     }
 
-    /**The protected way to handle a request
-     * @param ServerRequestInterface $request being the request to handle
-     * @param ResponseInterface $response
-     * @return mixed
-     */
+	/**The protected way to handle a request
+	 * @param ServerRequestInterface $request being the request to handle
+	 * @param ResponseInterface $response
+	 * @return mixed
+	 * @throws ReflectionException
+	 */
     protected function handleRequest(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface{
         $handleRequest = (new ReflectionClass(Router::class))
             ->getMethod("handleRequest");
@@ -236,16 +243,17 @@ class App{
         return $ret;
     }
 
-    /**Sets up a Route in this T_RouteBuilder
-     * @param string $method being the Route's method
-     * @param string $re being the Route's regular expression
-     * @param callable $functor being the Route's handler
-     * @param callable|null $authMiddleware being the Route's middleware
-     * @return Route
-     */
+	/**Sets up a Route in this T_RouteBuilder
+	 * @param string $method being the Route's method
+	 * @param string $re being the Route's regular expression
+	 * @param callable $functor being the Route's handler
+	 * @param callable|null $authMiddleware being the Route's middleware
+	 * @return Route
+	 * @throws ReflectionException
+	 */
     protected function setupRoute(string $method, string $re, callable $functor, ?callable $authMiddleware = null): Route {
         $setupRoute = (new ReflectionClass(Router::class))
-            ->getMethod("setupRoute");
+		->getMethod("setupRoute");
 
         $setupRoute->setAccessible(true);
         $ret = $setupRoute->invokeArgs($this->router, [$method, $re, $functor, $authMiddleware]);
@@ -254,14 +262,15 @@ class App{
         return $ret;
     }
 
-    /**Determines whether or not this T_RouteStores has a given Route (from a method and a regex)
-     * @param string $method being the method to check
-     * @param string $re being the Regex to check
-     * @return bool
-     */
+	/**Determines whether or not this T_RouteStores has a given Route (from a method and a regex)
+	 * @param string $method being the method to check
+	 * @param string $re being the Regex to check
+	 * @return bool
+	 * @throws ReflectionException
+	 */
     protected function hasRoute(string $method, string $re): bool {
         $hasRoute = (new ReflectionClass(Router::class))
-            ->getMethod("hasRoute");
+		->getMethod("hasRoute");
 
         $hasRoute->setAccessible(true);
         $ret = $hasRoute->invokeArgs($this->router, [$method, $re]);
@@ -270,14 +279,15 @@ class App{
         return $ret;
     }
 
-    /**Retrieves a Route in this T_RouteStore from a method and a regex
-     * @param string $method being the method of the Route to retrieve
-     * @param string $re being the Regex of the Route to retrieve
-     * @return Route|null
-     */
+	/**Retrieves a Route in this T_RouteStore from a method and a regex
+	 * @param string $method being the method of the Route to retrieve
+	 * @param string $re being the Regex of the Route to retrieve
+	 * @return Route|null
+	 * @throws ReflectionException
+	 */
     protected function getRoute(string $method, string $re): ?Route {
         $getRoute = (new ReflectionClass(Router::class))
-            ->getMethod("getRoute");
+		->getMethod("getRoute");
 
         $getRoute->setAccessible(true);
         $ret = $getRoute->invokeArgs($this->router, [$method, $re]);
@@ -286,13 +296,14 @@ class App{
         return $ret;
     }
 
-    /**Retrieves the array of Route which method's is the given method
-     * @param string $method being the given method
-     * @return Route[]
-     */
+	/**Retrieves the array of Route which method's is the given method
+	 * @param string $method being the given method
+	 * @return Route[]
+	 * @throws ReflectionException
+	 */
     protected function getRoutesForMethod(string $method): array {
         $getRoutesForMethod = (new ReflectionClass(Router::class))
-            ->getMethod("getRoutesForMethod");
+		->getMethod("getRoutesForMethod");
 
         $getRoutesForMethod->setAccessible(true);
         $ret = $getRoutesForMethod->invoke($this->router, $method);
@@ -301,13 +312,14 @@ class App{
         return $ret;
     }
 
-    /**Adds a Route to this T_RouteStore
-     * @param Route $route being the route that is being added to this T_RouteStore
-     * @return $this
-     */
+	/**Adds a Route to this T_RouteStore
+	 * @param Route $route being the route that is being added to this T_RouteStore
+	 * @return $this
+	 * @throws ReflectionException
+	 */
     protected function addRoute(Route $route) {
         $addRoute = (new ReflectionClass(Router::class))
-            ->getMethod("addRoute");
+		->getMethod("addRoute");
 
         $addRoute->setAccessible(true);
         $ret = $addRoute->invoke($this->router, $route);
@@ -318,7 +330,7 @@ class App{
 
     /**A static method initializing the core wildcards if they are not initialized
      */
-    static function initCoreWildcards(): void {
+    public static function initCoreWildcards(): void {
         Router::initCoreWildcards();
     }
 
@@ -326,14 +338,14 @@ class App{
      * @param string $wildcard being the wildcard identifier/non-compiled regex (eg. "/:wildcard/")
      * @param string $regex being the compiled regex for the wildcard
      */
-    static function registerWildcard(string $wildcard, string $regex): void {
+	public static function registerWildcard(string $wildcard, string $regex): void {
         Router::registerWildcard($wildcard, $regex);
     }
 
     /**Removes a (non core) wildcard
      * @param string $wildcard being the wildcard identifier/non-compiled regex of the wildcard to remove
      */
-    static function removeWildcard(string $wildcard): void {
+	public static function removeWildcard(string $wildcard): void {
         Router::removeWildcard($wildcard);
     }
 
@@ -341,7 +353,7 @@ class App{
      * @param string $alias being the wildcard identifier/non-compiled regex of the new wildcard
      * @param string $current being the the wildcard identifier/non-compiled regex of the aliased wildcard
      */
-    static function registerAliasWildcard(string $alias, string $current) {
+	public static function registerAliasWildcard(string $alias, string $current): void {
         Router::registerAliasWildcard($alias, $current);
     }
 }

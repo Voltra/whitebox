@@ -63,29 +63,32 @@ trait T_MetaRouter /*extends T_WildcardBasedArrayRouteManager*/ {
      */
     protected abstract function getAllTransformedRoutesForMethod(string $method) : array;
 
+	/**
+	 * @return Route[]
+	 */
     protected abstract function getAllRoutes() : array;
 
     protected abstract function getAllTransformedRoutes() : array;
 
 
     public function urlFor(string $routeName, ?array $uriParams = null): string {
-        $name = "{$routeName}";
+        $name = (string)$routeName;
 
         foreach ($this->getAllRoutes() as $route) {
             if ($route->getName() === $name) {
-                if(is_null($uriParams))
+                if($uriParams === null)
                     return $route->regex();
                 else {
                     $uriKeys = array_keys($uriParams);
                     $uriValues = array_values($uriParams);
-                    $uriParameters = array_map(function($key, $value){
+                    $uriParameters = array_map(static function($key, $value){
                         return [
                             "key" => $key,
                             "value" => $value
                         ];
                     }, $uriKeys, $uriValues);
 
-                    return array_reduce($uriParameters, function (string $routeBuilt, array $uriParam): string {
+                    return array_reduce($uriParameters, static function(string $routeBuilt, array $uriParam): string {
                         $key = (string)$uriParam["key"];
                         $value = (string)$uriParam["value"];
                         return preg_replace("/:{$key}/", $value, $routeBuilt, 1);

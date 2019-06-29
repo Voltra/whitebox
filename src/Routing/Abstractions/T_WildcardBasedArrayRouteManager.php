@@ -82,23 +82,23 @@ trait T_WildcardBasedArrayRouteManager{
      * @return string
      */
     public function urlFor(string $routeName, ?array $uriParams = null): string {
-        $name = "{$routeName}";
+        $name = (string)$routeName;
 
         foreach ($this->routes as $route) {
             if ($route->getName() === $name) {
-                if(is_null($uriParams))
+                if($uriParams === null)
                     return $route->regex();
                 else {
                     $uriKeys = array_keys($uriParams);
                     $uriValues = array_values($uriParams);
-                    $uriParameters = array_map(function($key, $value){
+                    $uriParameters = array_map(static function($key, $value){
                         return [
                             "key" => $key,
                             "value" => $value
                         ];
                     }, $uriKeys, $uriValues);
 
-                    return array_reduce($uriParameters, function (string $routeBuilt, array $uriParam): string {
+                    return array_reduce($uriParameters, static function (string $routeBuilt, array $uriParam): string {
                         $key = (string)$uriParam["key"];
                         $value = (string)$uriParam["value"];
                         return preg_replace("/:{$key}/", $value, $routeBuilt, 1);
@@ -168,7 +168,7 @@ trait T_WildcardBasedArrayRouteManager{
      * @return string
      */
     protected static function masksToRegex(string $uri_regex): string{
-        $re = "{$uri_regex}";
+        $re = (string)$uri_regex;
 
         foreach(self::$wildcards as $pattern=>$replacement) //Replaces all defined wildcards before default wildcard
             $re = preg_replace($pattern, $replacement, $re);
